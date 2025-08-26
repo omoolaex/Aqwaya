@@ -15,7 +15,6 @@ import {
   Plus,
   Search,
   Target,
-  UserCircle,
   UsersRound,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,7 +29,6 @@ import Sidebar from "../../components/Sidebar";
 
 export default function Campaigns() {
   const [view, setView] = useState("list");
-  const [filter, setFilter] = React.useState("all");
   const [search, setSearch] = React.useState("");
 
   return (
@@ -44,20 +42,23 @@ export default function Campaigns() {
           // ================= CAMPAIGNS LIST VIEW =================
           <>
             <div className="flex justify-between items-center mb-6">
-              <div>
+              <div className="flex gap-3">
                 {/* Back */}
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 text-gray-600 hover:text-gray-900 mb-6"
-                >
-                  <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-                </Link>
-              </div>
-              <div>
-                <h1 className="text-2xl font-semibold">Campaigns</h1>
-                <p className="text-gray-500 text-xs">
-                  Manage all your marketing campaigns in one place
-                </p>
+                <div>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm flex items-center gap-2 hover:bg-gray-100 px-4 py-2 text-gray-600 hover:text-gray-900 mb-6"
+                  >
+                    <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+                  </Link>
+                </div>
+
+                <div>
+                  <h1 className="text-2xl font-semibold">Campaigns</h1>
+                  <p className="text-gray-500 text-xs">
+                    Manage all your marketing campaigns in one place
+                  </p>
+                </div>
               </div>
               <div>
                 <Button>
@@ -96,10 +97,12 @@ export default function Campaigns() {
               </div>
 
               {/* Filter dropdown */}
-              <Select value={filter} onValueChange={setFilter}>
+              <Select>
                 <SelectTrigger className="border border-gray-200">
-                  <FunnelIcon className="w-4 h-4 mr-2 text-gray-400" />
-                  <SelectValue placeholder="Filters" />
+                  <div className="flex gap-1 items-center">
+                    <FunnelIcon className="w-4 h-4 mr-2 text-gray-800" />
+                    <SelectValue placeholder="Filters" />
+                  </div>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Campaigns</SelectItem>
@@ -116,7 +119,7 @@ export default function Campaigns() {
                 <CardContent className="flex justify-between items-center px-4 py-6">
                   <div className="flex flex-col">
                     <p className="text-sm text-gray-500">Total Campaigns</p>
-                    <p className="text-xl font-bold mt-2 c">0</p>
+                    <p className="text-xl font-bold mt-2 text-blue-500">0</p>
                   </div>
                   <Target className="text-blue-500" />
                 </CardContent>
@@ -171,7 +174,9 @@ export default function Campaigns() {
               </Button>
               <div>
                 <h1 className="text-2xl font-semibold">Create Campaign</h1>
-                <p className="text-gray-500">Set up a new marketing campaign</p>
+                <p className="text-gray-500 text-sm">
+                  Set up a new marketing campaign
+                </p>
               </div>
             </div>
 
@@ -201,16 +206,24 @@ export default function Campaigns() {
                           <SelectValue placeholder="Select campaign type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="email">Email Marketing</SelectItem>
-                          <SelectItem value="sms">SMS /Whatsapp</SelectItem>
-                          <SelectItem value="landingPage">
+                          <SelectItem value="Email Marketing">
+                            Email Marketing
+                          </SelectItem>
+                          <SelectItem value="SMS/Whatsapp">
+                            SMS/Whatsapp
+                          </SelectItem>
+                          <SelectItem value="Landing Page">
                             Landing Page
                           </SelectItem>
-                          <SelectItem value="fullFunnel">
+                          <SelectItem value="Full Funnel">
                             Full Funnel
                           </SelectItem>
-                          <SelectItem value="social">Social Media</SelectItem>
-                          <SelectItem value="lead">Lead Generation</SelectItem>
+                          <SelectItem value="Social Media">
+                            Social Media
+                          </SelectItem>
+                          <SelectItem value="Lead Generation">
+                            Lead Generation
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

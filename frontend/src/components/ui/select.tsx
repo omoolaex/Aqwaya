@@ -1,6 +1,9 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+import { DropdownMenu } from "radix-ui";
+import { ChevronDown } from "lucide-react";
+
 // Root Select
 interface SelectContextType {
   open: boolean;
@@ -26,7 +29,7 @@ function SelectProvider({ children }: { children: React.ReactNode }) {
 const SelectTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => {
+>(({ children, className, ...props }, ref) => {
   const context = React.useContext(Select);
   if (!context) {
     throw new Error("SelectTrigger must be used within a SelectProvider");
@@ -43,7 +46,10 @@ const SelectTrigger = React.forwardRef<
       )}
       onClick={() => setOpen(!open)}
       {...props}
-    />
+    >
+      <span className="flex-1 text-left">{children}</span>
+      <ChevronDown className="ml-2 h-4 w-4 text-muted-foreground" />
+    </button>
   );
 });
 SelectTrigger.displayName = "SelectTrigger";
@@ -94,7 +100,7 @@ function SelectItem({ children, value }: { children: React.ReactNode; value: str
         setValue(value);
         setOpen(false);
       }}
-      className="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+      className="px-3 py-2 cursor-pointer hover:bg-gray-100 text-xs"
     >
       {children}
     </div>
