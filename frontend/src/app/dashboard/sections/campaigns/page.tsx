@@ -41,37 +41,44 @@ export default function Campaigns() {
         {view === "list" ? (
           // ================= CAMPAIGNS LIST VIEW =================
           <>
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
+              {/* Left section */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
                 {/* Back */}
                 <div>
                   <Link
                     href="/dashboard"
-                    className="text-sm flex items-center gap-2 hover:bg-gray-100 px-4 py-2 text-gray-600 hover:text-gray-900 mb-6"
+                    className="text-sm flex items-center gap-2 hover:bg-gray-100 px-4 py-2 text-gray-600 hover:text-gray-900"
                   >
                     <ArrowLeft className="w-4 h-4" /> Back to Dashboard
                   </Link>
                 </div>
 
+                {/* Title + subtitle */}
                 <div>
-                  <h1 className="text-2xl font-semibold">Campaigns</h1>
-                  <p className="text-gray-500 text-xs">
+                  <h1 className="text-xl md:text-2xl font-semibold">
+                    Campaigns
+                  </h1>
+                  <p className="text-gray-500 text-xs md:text-sm">
                     Manage all your marketing campaigns in one place
                   </p>
                 </div>
               </div>
-              <div>
-                <Button>
+
+              {/* Right section (buttons) */}
+              <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <Button className="w-full sm:w-auto">
                   <Link
                     href="/dashboard/sections/prompt-builder"
-                    className="border border-gray-200 hover:bg-gray-100 px-6 py-2 rounded-lg flex items-center gap-2 bg-white"
+                    className="border border-gray-200 hover:bg-gray-100 px-6 py-2 rounded-lg flex items-center justify-center gap-2 bg-white w-full sm:w-auto"
                   >
                     <Target />
                     AI Builder
                   </Link>
                 </Button>
+
                 <Button
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg shadow"
+                  className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg shadow flex items-center justify-center gap-2"
                   onClick={() => setView("create")}
                 >
                   <Plus /> Create Campaign
