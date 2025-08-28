@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,18 +8,55 @@ import { Label } from "@/components/ui/label";
 import { Mail, Lock, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { registerUser } from "../../../api/auth";
+
+// Helper to check if user is logged in
+const isLoggedIn = () => !!localStorage.getItem("token");
 
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [checkingAuth, setCheckingAuth] = useState(true); // spinner state
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect logged-in users away from signup page
+  useEffect(() => {
+    if (isLoggedIn()) {
+      router.push("/dashboard");
+    } else {
+      setCheckingAuth(false); // not logged in → show form
+    }
+  }, [router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ firstName, lastName, email, password });
-    // TODO: integrate API route
+    setError("");
+
+    try {
+      const username = `${firstName} ${lastName}`;
+      const data = await registerUser(username, email, password);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Redirect based on firstLogin
+      router.push("/onboarding");
+    } catch (err: any) {
+      setError(err.message || "Registration failed");
+    }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -48,13 +85,12 @@ export default function SignUpPage() {
             </Link>
           </div>
 
+          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              {/* firstName */}
               <div>
-                <Label htmlFor="firstName" className="text-gray-700">
-                  First Name
-                </Label>
+                <Label htmlFor="firstName" className="text-gray-700">First Name</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -67,15 +103,12 @@ export default function SignUpPage() {
                   />
                 </div>
               </div>
-              {/* lastName */}
               <div>
-                <Label htmlFor="lastName" className="text-gray-700">
-                  Last Name
-                </Label>
+                <Label htmlFor="lastName" className="text-gray-700">Last Name</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
-                    id="LastName"
+                    id="lastName"
                     type="text"
                     placeholder="Doe"
                     className="pl-10"
@@ -85,11 +118,9 @@ export default function SignUpPage() {
                 </div>
               </div>
             </div>
-            {/* Email */}
+
             <div>
-              <Label htmlFor="email" className="text-gray-700">
-                Email
-              </Label>
+              <Label htmlFor="email" className="text-gray-700">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <Input
@@ -103,11 +134,8 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
-              <Label htmlFor="password" className="text-gray-700">
-                Password
-              </Label>
+              <Label htmlFor="password" className="text-gray-700">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <Input
@@ -123,9 +151,7 @@ export default function SignUpPage() {
 
             <Button
               type="submit"
-              className="w-full text-white py-3 font-semibold 
-              bg-gradient-to-r from-blue-600 to-purple-600 
-              hover:opacity-90 transition"
+              className="w-full text-white py-3 font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 transition"
             >
               Create Account
             </Button>
