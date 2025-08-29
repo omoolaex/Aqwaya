@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import AuthGuard from "@/components/authguard";
 
 export default function BusinessProfileSetup() {
   return (
+   <AuthGuard> 
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
       <div className="bg-white shadow-md rounded-xl w-full max-w-xl p-8">
         {/* Header */}
@@ -184,5 +186,6 @@ export default function BusinessProfileSetup() {
         </div>
       </div>
     </div>
+   </AuthGuard> 
   );
 }
