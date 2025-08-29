@@ -41,7 +41,7 @@ export default function SignInPage() {
             </Link>
 
             <Link
-              href="/auth/register"
+              href="/"
               className="flex-1 px-4 py-2 text-gray-900 font-medium text-center"
             >
               Sign Up

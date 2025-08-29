@@ -153,8 +153,8 @@ export default function AutomationDashboard() {
               >
                 {/* Left: Title & Trigger */}
                 <div className="flex items-start md:items-center gap-4 flex-1">
-                  <div className="bg-gradient-to-r from-purple-400 to-blue-400 p-2 flex items-center justify-center rounded-lg text-white">
-                    <Zap className="w-4 h-4" />
+                  <div className="bg-gradient-to-r from-purple-500 to-blue-500 p-3 flex items-center justify-center rounded-lg text-white">
+                    <Zap className="w-6 h-6" />
                   </div>
                   <div>
                     <p className="font-medium">{a.title}</p>

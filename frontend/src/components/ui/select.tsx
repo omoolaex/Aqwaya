@@ -1,9 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-import { DropdownMenu } from "radix-ui";
-import { ChevronDown } from "lucide-react";
-
 // Root Select
 interface SelectContextType {
   open: boolean;
@@ -48,7 +45,6 @@ const SelectTrigger = React.forwardRef<
       {...props}
     >
       <span className="flex-1 text-left">{children}</span>
-      <ChevronDown className="ml-2 h-4 w-4 text-muted-foreground" />
     </button>
   );
 });
