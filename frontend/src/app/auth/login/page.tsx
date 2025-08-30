@@ -46,8 +46,12 @@ export default function SignInPage() {
       } else {
         router.push("/dashboard");
       }
-    } catch (err: any) {
-      setError(err.message || "Login failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Login failed");
+      } else {
+        setError("Login failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -83,7 +87,7 @@ export default function SignInPage() {
             </Link>
 
             <Link
-              href="/"
+              href="/auth/register"
               className="flex-1 px-4 py-2 text-gray-900 font-medium text-center"
             >
               Sign Up
