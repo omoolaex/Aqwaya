@@ -48,19 +48,22 @@ export default function Dashboard() {
     {
       name: "AI Landing Page Builder",
       desc: "Create high-converting landing pages with AI assistance for lead generation and sales",
-      color: "bg-gradient-to-r from-orange-400 to-orange-900",
+      color: "bg-gradient-to-r from-orange-500 to-orange-700",
+      borderColor: "hover:border-orange-200",
       icon: Globe,
     },
     {
       name: "AI Email Marketing",
       desc: "Design and send AI-powered email campaigns that convert",
-      color: "bg-gradient-to-r from-green-400 to-green-900",
+      color: "bg-gradient-to-r from-green-500 to-green-700",
+      borderColor: "hover:border-green-200",
       icon: Mail,
     },
     {
       name: "AI SMS & WhatsApp",
       desc: "Reach customers instantly with AI-crafted text and WhatsApp campaigns",
-      color: "bg-gradient-to-r from-purple-900 to-purple-400",
+      color: "bg-gradient-to-r from-purple-500 to-purple-700",
+      borderColor: "hover:border-purple-200",
       icon: MessageSquare,
     },
   ];
@@ -155,7 +158,7 @@ export default function Dashboard() {
             {channels.map((ch) => (
               <div
                 key={ch.name}
-                className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm text-center"
+                className={`bg-white border border-gray-200 transition duration-200 ${ch.borderColor} rounded-lg p-6 shadow-sm text-center`}
               >
                 <div
                   className={`${ch.color} mx-auto w-10 h-10 flex items-center justify-center rounded-full text-white mb-3`}
@@ -165,7 +168,7 @@ export default function Dashboard() {
                 <h4 className="font-semibold mb-2">{ch.name}</h4>
                 <p className="text-gray-500 text-sm mb-4">{ch.desc}</p>
                 <button
-                  className={`${ch.color} text-white px-4 py-2 rounded-md text-sm`}
+                  className={`${ch.color} text-white px-4 py-2 rounded-md text-sm w-full transition duration-200 hover:opacity-90`}
                 >
                   Start Building →
                 </button>
