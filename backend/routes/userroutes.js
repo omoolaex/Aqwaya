@@ -8,8 +8,8 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // Protected routes
-router.get("/onboarding", protect, onboardingHandler);
-router.get("/dashboard", protect, dashboardHandler);
+router.get("/onboarding", protect);
+router.get("/dashboard", protect);
 
 
 // New route to update firstLogin status
