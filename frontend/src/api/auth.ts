@@ -13,8 +13,11 @@ export const loginUser = async (email: string, password: string) => {
   try {
     const res = await axios.post(`${API_BASE}/api/users/login`, { email, password });
     return res.data; // { user, token } with firstLogin included
-  } catch (err: any) {
-    throw err.response?.data || { message: 'Login failed' };
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      throw err.response?.data || { message: 'Login failed' };
+  }
+    throw { message: 'Login failed' };
   }
 };
 
@@ -22,7 +25,10 @@ export const registerUser = async (username: string, email: string, password: st
   try {
     const res = await axios.post(`${API_BASE}/api/users/register`, { username, email, password });
     return res.data;
-  } catch (err: any) {
-    throw err.response?.data || { message: "Registration failed" };
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      throw err.response?.data || { message: "Registration failed" };
+  }
+  throw { message: "Registration failed" };
   }
 };
