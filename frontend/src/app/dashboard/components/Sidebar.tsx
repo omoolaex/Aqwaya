@@ -184,7 +184,7 @@ export default function Sidebar() {
           <div className="px-4 pt-4">
             <button
               onClick={handleLogout}
-              className="mt-3 flex items-center gap-2 w-full px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition text-left"
+              className="mt-3 mb-2 flex items-center gap-2 w-full px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition text-left"
             >
               <LogOut className="w-4 h-4" />
               <span>Logout</span>
