@@ -142,7 +142,7 @@ export default function Sidebar() {
             ))}
 
             {/* AI Info */}
-            <div className="rounded-lg bg-blue-50/50 p-4 text-sm text-purple-500 mt-6 border-1 border-text-purple-400">
+            <div className="rounded-lg bg-blue-50/50 p-4 text-sm text-purple-500 my-6 border-1 border-text-purple-400">
               <div className="flex gap-2 items-center mb-2">
                 <Sparkles className="w-4 h-4" />
                 <p className="font-semibold">AI-Powered Features</p>
@@ -181,7 +181,7 @@ export default function Sidebar() {
           </div>
 
           {/* Logout button */}
-          <div className="px-4 pt-4">
+          <div className="px-4 pt-1 border-t border-gray-200">
             <button
               onClick={handleLogout}
               className="mt-3 mb-2 flex items-center gap-2 w-full px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition text-left"
