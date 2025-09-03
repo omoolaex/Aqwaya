@@ -33,8 +33,18 @@ export default function SignUpPage() {
       localStorage.setItem("token", data.token);
       // redirect after success
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Registration failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+      setError(err.message);
+      } else if (
+        typeof err === "object" &&
+        err !== null &&
+        "message" in err &&
+        typeof (err as { message?: string }).message === "string"){
+          setError((err as { message: string }).message);
+      } else {
+        setError("Registration failed");
+      }
     } finally {
       setLoading(false);
     }
