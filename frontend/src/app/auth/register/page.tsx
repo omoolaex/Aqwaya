@@ -8,17 +8,36 @@ import { Label } from "@/components/ui/label";
 import { Mail, Lock, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { registerUser } from "@/api/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ firstName, lastName, email, password });
-    // TODO: integrate API route
+    setLoading(true);
+    setError(null);
+
+    const username = `${firstName} ${lastName}`.trim();
+
+    try {
+      const data = await registerUser(username, email, password);
+      localStorage.setItem("token", data.token);
+      // redirect after success
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,7 +48,9 @@ export default function SignUpPage() {
           <CardTitle className="mt-4 text-2xl font-bold text-gray-900">
             Create an Account
           </CardTitle>
-          <p className="text-sm text-gray-500">Sign up to start using Aqwaya</p>
+          <p className="text-sm text-gray-500">
+            Sign up to start using Aqwaya
+          </p>
         </CardHeader>
         <CardContent>
           <div className="flex mb-6 border rounded-lg overflow-hidden bg-gray-100 p-1">
@@ -50,7 +71,6 @@ export default function SignUpPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              {/* firstName */}
               <div>
                 <Label htmlFor="firstName" className="text-gray-700">
                   First Name
@@ -64,10 +84,11 @@ export default function SignUpPage() {
                     className="pl-10"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    required
                   />
                 </div>
               </div>
-              {/* lastName */}
+
               <div>
                 <Label htmlFor="lastName" className="text-gray-700">
                   Last Name
@@ -75,17 +96,18 @@ export default function SignUpPage() {
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
-                    id="LastName"
+                    id="lastName"
                     type="text"
                     placeholder="Doe"
                     className="pl-10"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    required
                   />
                 </div>
               </div>
             </div>
-            {/* Email */}
+
             <div>
               <Label htmlFor="email" className="text-gray-700">
                 Email
@@ -99,11 +121,11 @@ export default function SignUpPage() {
                   className="pl-10"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <Label htmlFor="password" className="text-gray-700">
                 Password
@@ -117,17 +139,23 @@ export default function SignUpPage() {
                   className="pl-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600 text-center">{error}</p>
+            )}
+
             <Button
               type="submit"
+              disabled={loading}
               className="w-full text-white py-3 font-semibold 
               bg-gradient-to-r from-blue-600 to-purple-600 
               hover:opacity-90 transition"
             >
-              Create Account
+              {loading ? "Creating..." : "Create Account"}
             </Button>
           </form>
         </CardContent>

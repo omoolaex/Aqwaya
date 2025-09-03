@@ -9,7 +9,8 @@ import { Mail, Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { loginUser } from "../../../api/auth";
+import { loginUser } from "@/api/auth";
+import axios from "axios";
 
 // Helper to check if user is logged in
 const isLoggedIn = () => !!localStorage.getItem("token");
@@ -19,7 +20,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true); // <--- spinner state
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
 
   // Redirect logged-in users away from login page
@@ -27,7 +28,7 @@ export default function SignInPage() {
     if (isLoggedIn()) {
       router.push("/dashboard");
     } else {
-      setCheckingAuth(false); // not logged in → show form
+      setCheckingAuth(false);
     }
   }, [router]);
 
@@ -47,8 +48,13 @@ export default function SignInPage() {
         router.push("/dashboard");
       }
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message || "Login failed");
+      if (axios.isAxiosError(err)) {
+        const msg =
+          (err.response?.data as { message?: string })?.message ||
+          "Login failed";
+        setError(msg);
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
         setError("Login failed");
       }
@@ -98,7 +104,9 @@ export default function SignInPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="text-gray-700">Email</Label>
+              <Label htmlFor="email" className="text-gray-700">
+                Email
+              </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <Input
@@ -114,7 +122,9 @@ export default function SignInPage() {
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-gray-700">Password</Label>
+              <Label htmlFor="password" className="text-gray-700">
+                Password
+              </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <Input
