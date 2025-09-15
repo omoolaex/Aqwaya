@@ -3,11 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md flex flex-col items-center w-full max-w-sm sm:max-w-md md:max-w-lg">
+      <Card className="bg-white border border-gray-200 p-6 sm:p-8 rounded-lg shadow-md flex flex-col items-center w-full max-w-sm sm:max-w-md md:max-w-lg">
         {/* Logo */}
         <div className="mb-6">
           <Image
@@ -27,9 +29,9 @@ export default function HomePage() {
         {/* Sign Up button */}
         <div className="flex flex-col gap-3 w-full max-w-xs">
           <Link href="/auth/register" className="w-full">
-            <button className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition w-full text-sm sm:text-base">
+            <Button className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition w-full text-sm sm:text-base">
               Sign Up
-            </button>
+            </Button>
           </Link>
         </div>
 
@@ -40,7 +42,7 @@ export default function HomePage() {
             Sign in
           </Link>
         </div>
-      </div>
+      </Card>
     </main>
   );
 }

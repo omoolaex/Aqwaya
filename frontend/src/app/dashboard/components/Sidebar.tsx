@@ -30,7 +30,6 @@ export default function Sidebar() {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
- 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -42,13 +41,13 @@ export default function Sidebar() {
     {
       name: "AI Prompt Builder",
       icon: Zap,
-      href: "/dashboard/sections/prompt-builder",
+      href: "/dashboard/sections/AIPromptBuilder",
     },
     { name: "Campaigns", icon: Target, href: "/dashboard/sections/campaigns" },
     {
       name: "Landing Pages",
       icon: Globe,
-      href: "/dashboard/sections/landing-pages",
+      href: "/dashboard/sections/landingPages",
     },
     { name: "Leads", icon: UsersRound, href: "/dashboard/sections/leads" },
     {
