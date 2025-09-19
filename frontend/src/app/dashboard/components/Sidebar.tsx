@@ -43,32 +43,22 @@ export default function Sidebar() {
       icon: Zap,
       href: "/dashboard/sections/AIPromptBuilder",
     },
-    { name: "Campaigns", icon: Target, href: "/dashboard/sections/campaigns" },
+    // { name: "Campaigns", icon: Target, href: "/dashboard/sections/campaigns" },
     {
       name: "Landing Pages",
       icon: Globe,
       href: "/dashboard/sections/landingPages",
     },
     { name: "Leads", icon: UsersRound, href: "/dashboard/sections/leads" },
-    {
-      name: "AI Email Marketing",
-      icon: Bot,
-      href: "/dashboard/sections/email-marketing",
-    },
+    // {
+    //   name: "AI Email Marketing",
+    //   icon: Bot,
+    //   href: "/dashboard/sections/email-marketing",
+    // },
     {
       name: "SMS & WhatsApp",
       icon: MessageSquare,
       href: "/dashboard/sections/messaging",
-    },
-    {
-      name: "Automations",
-      icon: Workflow,
-      href: "/dashboard/sections/automations",
-    },
-    {
-      name: "Templates",
-      icon: FileText,
-      href: "/dashboard/sections/templates",
     },
     {
       name: "Analytics",
