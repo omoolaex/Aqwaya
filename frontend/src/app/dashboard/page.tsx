@@ -1,7 +1,7 @@
 "use client";
 
 import Sidebar from "./components/Sidebar";
-import AuthGuard from "@/components/authguard"; // make sure the path is correct
+import AuthGuard from "@/components/authguard";
 import {
   Mail,
   MessageSquare,

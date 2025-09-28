@@ -407,7 +407,7 @@ const WorkingCampaignCreator = ({
                 ) : (
                   <Button
                     onClick={handleSubmit}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="text-white bg-green-600 hover:bg-green-700"
                   >
                     Create Campaign
                   </Button>

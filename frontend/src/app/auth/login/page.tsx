@@ -9,7 +9,7 @@ import { Mail, Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/api/auth";
+import { loginUser } from "@/app/api/auth";
 import axios from "axios";
 
 // Helper to check if user is logged in

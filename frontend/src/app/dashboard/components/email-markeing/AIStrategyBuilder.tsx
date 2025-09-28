@@ -51,6 +51,7 @@ type AIStrategy = {
 };
 
 interface AIStrategyBuilderProps {
+  user: unknown;
   onBack: () => void;
   onComplete: (strategy: AIStrategy) => void;
 }

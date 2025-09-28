@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Lock, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { registerUser } from "@/api/auth";
+import { registerUser } from "@/app/api/auth";
 import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
@@ -35,13 +35,14 @@ export default function SignUpPage() {
       router.push("/dashboard");
     } catch (err: unknown) {
       if (err instanceof Error) {
-      setError(err.message);
+        setError(err.message);
       } else if (
         typeof err === "object" &&
         err !== null &&
         "message" in err &&
-        typeof (err as { message?: string }).message === "string"){
-          setError((err as { message: string }).message);
+        typeof (err as { message?: string }).message === "string"
+      ) {
+        setError((err as { message: string }).message);
       } else {
         setError("Registration failed");
       }
@@ -58,9 +59,7 @@ export default function SignUpPage() {
           <CardTitle className="mt-4 text-2xl font-bold text-gray-900">
             Create an Account
           </CardTitle>
-          <p className="text-sm text-gray-500">
-            Sign up to start using Aqwaya
-          </p>
+          <p className="text-sm text-gray-500">Sign up to start using Aqwaya</p>
         </CardHeader>
         <CardContent>
           <div className="flex mb-6 border rounded-lg overflow-hidden bg-gray-100 p-1">

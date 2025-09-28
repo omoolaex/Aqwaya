@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,40 +37,26 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
     null
   );
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Local mock campaigns
-  const [campaigns, setCampaigns] = useState<Campaign[]>([
-    {
-      id: "1",
-      name: "Welcome Email",
-      type: "Email",
-      status: "Active",
-      description: "Onboarding email for new users",
-      targetAudience: "New Signups",
-      budget: "$100",
-      channels: ["email"],
-      leads: 250,
-      conversion: "12%",
-      revenue: "$500",
-      created: "2 days ago",
-      lastActive: "1 day ago",
-    },
-    {
-      id: "2",
-      name: "Holiday Promo",
-      type: "Landing Page",
-      status: "Draft",
-      description: "Promo for Christmas sales",
-      targetAudience: "All Customers",
-      budget: "$500",
-      channels: ["landing-page", "email"],
-      leads: 0,
-      conversion: "0%",
-      revenue: "$0",
-      created: "Just now",
-      lastActive: "Never",
-    },
-  ]);
+  // Fetch campaigns from API
+  useEffect(() => {
+    fetch("/api/campaigns")
+      .then((res) => res.json())
+      .then((json) => {
+        setCampaigns(json.campaigns);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Loading campaigns...</p>
+      </div>
+    );
+  }
 
   // Handle different views
   if (currentView === "ai-builder") {
@@ -244,7 +230,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
               </Button>
               <Button
                 onClick={() => setCurrentView("create")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create Campaign
@@ -341,7 +327,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
             <CardContent>
               <div className="space-y-4">
                 {filteredCampaigns.map((campaign) => (
-                  <div
+                  <Card
                     key={campaign.id}
                     className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
                   >
@@ -447,7 +433,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
                       <span>Created {campaign.created}</span>
                       <span>Last active {campaign.lastActive}</span>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             </CardContent>

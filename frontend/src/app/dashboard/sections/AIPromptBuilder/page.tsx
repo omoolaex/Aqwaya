@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 
 interface AIPromptBuilderProps {
   onBack: () => void;
@@ -52,7 +53,7 @@ interface GeneratedStrategy {
   timeline: string;
 }
 
-const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
+const AIPromptBuilder = ({ specificTool }: AIPromptBuilderProps) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     goal: "",
@@ -557,10 +558,12 @@ const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
         </div>
 
         <div className="flex justify-start">
-          <Button variant="outline" onClick={onBack}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Button>
+          <Link
+            href="/dashboard"
+            className="text-sm flex items-center gap-2 bg-white rounded hover:bg-gray-100 border border-gray-200 px-4 py-2 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back
+          </Link>
         </div>
       </div>
     );
@@ -1016,13 +1019,12 @@ const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
           <Button variant="outline" onClick={() => setStep(1)}>
             Create New Campaign
           </Button>
-          <Button
-            onClick={onBack}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          <Link
+            href="/dashboard"
+            className="text-sm flex items-center gap-2 bg-white rounded hover:bg-gray-100 border border-gray-200 px-4 py-2 text-gray-600 hover:text-gray-900"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Button>
+            <ArrowLeft className="w-4 h-4" /> Back
+          </Link>
         </div>
       </div>
     </div>
@@ -1077,10 +1079,12 @@ const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
       <main className="flex-1 p-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center space-x-4 mb-8">
-            <Button variant="ghost" onClick={onBack}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
-            </Button>
+            <Link
+              href="/dashboard"
+              className="text-sm flex items-center gap-2 bg-white rounded hover:bg-gray-100 border border-gray-200 px-4 py-2 text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
+            </Link>
             <div className="flex-1">
               <div className="flex items-center space-x-2">
                 {[1, 2, 3, 4].map((stepNumber) => (

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,7 +51,6 @@ type EmailStrategy = {
   business_type: string;
   marketing_goals: string[];
   created_at: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   generated_strategy: any;
   target_audience_profile?: { description?: string };
 };
@@ -82,32 +82,28 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
     useState<EmailStrategy | null>(null);
   const [activeTab, setActiveTab] = useState("campaigns");
   const [strategies, setStrategies] = useState<EmailStrategy[]>([]);
-  const [campaigns, setCampaigns] = useState<EmailCampaign[]>([
-    {
-      id: "campaign-1",
-      user_id: mockUser.id,
-      name: "Welcome Series",
-      subject_line: "Welcome to our community!",
-      campaign_type: "sequence",
-      status: "active",
-      target_segments: ["new_subscribers"],
-      content: {
-        html: "<h1>Welcome!</h1><p>Thank you for joining us.</p>",
-        text: "Welcome! Thank you for joining us.",
-      },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      stats: {
-        sent: 1250,
-        delivered: 1200,
-        opened: 480,
-        clicked: 96,
-        unsubscribed: 5,
-        bounced: 15,
-      },
-    },
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch email data from API
+  useEffect(() => {
+    fetch("/api/email")
+      .then((res) => res.json())
+      .then((json) => {
+        setCampaigns(json.campaigns);
+        setStrategies(json.strategies);
+      })
+      .catch((err) => console.error("Failed to fetch email data:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Loading email marketing data...</p>
+      </div>
+    );
+  }
 
   const handleStrategyComplete = (strategy: EmailStrategy) => {
     console.log("Strategy completed:", strategy);
@@ -270,7 +266,6 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
   if (currentView === "ai-strategy") {
     return (
       <AIStrategyBuilder
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         user={mockUser as any}
         onBack={handleBackToDashboard}
         onComplete={handleStrategyComplete}
@@ -288,21 +283,11 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
     );
   }
 
-  // if (currentView === "create") {
-  //   // Placeholder for CampaignCreator
-  //   return (
-  //     <div className="p-8">
-  //       <h2 className="text-2xl font-bold mb-4">Create Campaign (Mock)</h2>
-  //       <Button onClick={handleBackToDashboard}>Back to Dashboard</Button>
-  //     </div>
-  //   );
-  // }
   if (currentView === "create") {
     return (
       <CampaignCreator
         onBack={handleBackToDashboard}
         onComplete={handleCampaignCreated}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         user={mockUser as any}
       />
     );
@@ -350,7 +335,7 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
               </Button>
               <Button
                 onClick={handleCreateCampaign}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Create Campaign

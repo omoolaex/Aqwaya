@@ -232,7 +232,7 @@ const CampaignForm = ({
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    className="text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     {mode === "create" ? "Create Campaign" : "Save Changes"}
