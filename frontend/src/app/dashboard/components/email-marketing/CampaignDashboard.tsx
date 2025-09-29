@@ -153,13 +153,13 @@ const CampaignDashboard = ({
   const getCampaignTypeIcon = (type: string) => {
     switch (type) {
       case "sequence":
-        return "📧";
+        return <Mail className='w-6 h-6' />;
       case "automation":
-        return "🤖";
+        return <Users className='w-6 h-6' />;
       case "one-time":
-        return "📨";
+        return <MousePointer className='w-6 h-6' />;
       default:
-        return "📧";
+        return <Mail className='w-6 h-6' />;
     }
   };
 

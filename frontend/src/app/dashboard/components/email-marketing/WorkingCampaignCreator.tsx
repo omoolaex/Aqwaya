@@ -15,7 +15,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Mail, Target, Clock, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import Sidebar from "../Sidebar";
 
 // Local type definition for EmailCampaign
 type EmailCampaign = {
@@ -150,8 +149,6 @@ const WorkingCampaignCreator = ({
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-6">
@@ -401,7 +398,11 @@ const WorkingCampaignCreator = ({
                 </Button>
 
                 {step < 4 ? (
-                  <Button onClick={nextStep} disabled={!isStepComplete(step)}>
+                  <Button
+                    onClick={nextStep}
+                    disabled={!isStepComplete(step)}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                  >
                     Next
                   </Button>
                 ) : (

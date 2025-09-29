@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,13 +21,11 @@ import {
   DollarSign,
   Save,
 } from "lucide-react";
-import Sidebar from "../../components/Sidebar";
-import { Textarea } from "@/components/ui/textarea";
-import Link from "next/link";
+// import { Campaign } from "@/types/campaign";
 
 interface AIPromptBuilderProps {
   onBack: () => void;
-  specificTool?: "landing-page" | "email" | "sms-whatsapp";
+  specificTool?: "landing-page" | "email" | "sms-whatsapp" | null;
 }
 
 interface StrategyComponent {
@@ -53,7 +50,7 @@ interface GeneratedStrategy {
   timeline: string;
 }
 
-const AIPromptBuilder = ({ specificTool }: AIPromptBuilderProps) => {
+const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     goal: "",
@@ -558,12 +555,10 @@ const AIPromptBuilder = ({ specificTool }: AIPromptBuilderProps) => {
         </div>
 
         <div className="flex justify-start">
-          <Link
-            href="/dashboard"
-            className="text-sm flex items-center gap-2 bg-white rounded hover:bg-gray-100 border border-gray-200 px-4 py-2 text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </Link>
+          <Button variant="outline" onClick={onBack}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Button>
         </div>
       </div>
     );
@@ -653,8 +648,8 @@ const AIPromptBuilder = ({ specificTool }: AIPromptBuilderProps) => {
                 Current Challenges
               </Label>
             </div>
-            <Textarea
-              className="flex min-h-[80px] w-full rounded-md border border-gray-200 bg-background px-3 py-2 text-sm"
+            <textarea
+              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               placeholder="What specific challenges are you facing with your current marketing efforts?"
               value={formData.currentChallenges}
               onChange={(e) =>
@@ -697,431 +692,405 @@ const AIPromptBuilder = ({ specificTool }: AIPromptBuilderProps) => {
   );
 
   const renderStep3 = () => (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <div className="space-y-6">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-4">
-              <Sparkles className="w-8 h-8 text-white" />
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-4">
+          <Sparkles className="w-8 h-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Your AI Strategy
+        </h2>
+        <p className="text-gray-600">
+          Review, edit, and approve your personalized marketing strategy
+        </p>
+      </div>
+
+      <Card className="border-2 border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Target className="w-5 h-5 text-blue-600" />
+              <span>{generatedStrategy?.title}</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Your AI Strategy
-            </h2>
-            <p className="text-gray-600">
-              Review, edit, and approve your personalized marketing strategy
-            </p>
+            <Button variant="outline" size="sm">
+              <Edit className="w-4 h-4 mr-2" />
+              Edit Title
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 mb-6">{generatedStrategy?.overview}</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="p-4 bg-white rounded-lg border">
+              <h4 className="font-semibold text-gray-900 mb-2">Timeline</h4>
+              <p className="text-sm text-gray-600">
+                {generatedStrategy?.timeline}
+              </p>
+            </div>
+            <div className="p-4 bg-white rounded-lg border">
+              <h4 className="font-semibold text-gray-900 mb-2">
+                What We&apos;ll Track
+              </h4>
+              <div className="text-sm text-gray-600">
+                {generatedStrategy?.keyMetrics
+                  .slice(0, 2)
+                  .map((metric, index) => (
+                    <div key={index}>{metric}</div>
+                  ))}
+              </div>
+            </div>
           </div>
 
-          <Card className="border-2 border-blue-200 bg-blue-50">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Target className="w-5 h-5 text-blue-600" />
-                  <span>{generatedStrategy?.title}</span>
-                </div>
-                <Button variant="outline" size="sm">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Title
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 mb-6">
-                {generatedStrategy?.overview}
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="p-4 bg-white rounded-lg border">
-                  <h4 className="font-semibold text-gray-900 mb-2">Timeline</h4>
-                  <p className="text-sm text-gray-600">
-                    {generatedStrategy?.timeline}
-                  </p>
-                </div>
-                <div className="p-4 bg-white rounded-lg border">
-                  <h4 className="font-semibold text-gray-900 mb-2">
-                    What We&apos;ll Track
-                  </h4>
-                  <div className="text-sm text-gray-600">
-                    {generatedStrategy?.keyMetrics
-                      .slice(0, 2)
-                      .map((metric, index) => (
-                        <div key={index}>{metric}</div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 mb-6">
-                <h4 className="font-semibold text-gray-900">
-                  What We&apos;ll Build for You:
-                </h4>
-                <div className="space-y-4">
-                  {generatedStrategy?.components.map((component, index) => (
-                    <div
-                      key={index}
-                      className="p-6 bg-white rounded-lg border border-blue-200"
+          <div className="space-y-4 mb-6">
+            <h4 className="font-semibold text-gray-900">
+              What We&apos;ll Build for You:
+            </h4>
+            <div className="space-y-4">
+              {generatedStrategy?.components.map((component, index) => (
+                <div
+                  key={index}
+                  className="p-6 bg-white rounded-lg border border-blue-200"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className={`w-10 h-10 bg-gradient-to-r ${component.color} rounded-full flex items-center justify-center`}
+                      >
+                        <component.icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-gray-900">
+                          {component.title}
+                        </h5>
+                        <p className="text-sm text-gray-600">
+                          {component.description}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setEditingComponent(
+                          editingComponent === index ? null : index
+                        )
+                      }
                     >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <div
-                            className={`w-10 h-10 bg-gradient-to-r ${component.color} rounded-full flex items-center justify-center`}
-                          >
-                            <component.icon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              {component.title}
-                            </h5>
-                            <p className="text-sm text-gray-600">
-                              {component.description}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            setEditingComponent(
-                              editingComponent === index ? null : index
-                            )
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {editingComponent === index ? (
+                    <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <Label>Component Title</Label>
+                        <Input
+                          value={component.title}
+                          onChange={(e) =>
+                            updateComponent(index, {
+                              ...component,
+                              title: e.target.value,
+                            })
                           }
+                        />
+                      </div>
+                      <div>
+                        <Label>Description</Label>
+                        <textarea
+                          className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          value={component.description}
+                          onChange={(e) =>
+                            updateComponent(index, {
+                              ...component,
+                              description: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          onClick={() => setEditingComponent(null)}
                         >
-                          <Edit className="w-4 h-4" />
+                          <Save className="w-4 h-4 mr-2" />
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingComponent(null)}
+                        >
+                          Cancel
                         </Button>
                       </div>
-
-                      {editingComponent === index ? (
-                        <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                          <div>
-                            <Label>Component Title</Label>
-                            <Input
-                              value={component.title}
-                              onChange={(e) =>
-                                updateComponent(index, {
-                                  ...component,
-                                  title: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Label>Description</Label>
-                            <Textarea
-                              className="flex min-h-[60px] w-full rounded-md border border-gray-200 bg-background px-3 py-2 text-sm"
-                              value={component.description}
-                              onChange={(e) =>
-                                updateComponent(index, {
-                                  ...component,
-                                  description: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="flex space-x-2">
-                            <Button
-                              size="sm"
-                              onClick={() => setEditingComponent(null)}
-                            >
-                              <Save className="w-4 h-4 mr-2" />
-                              Save
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setEditingComponent(null)}
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          <div>
-                            <h6 className="font-medium text-gray-800 mb-2">
-                              What This Includes:
-                            </h6>
-                            <ul className="space-y-1">
-                              {component.details.map((detail, detailIndex) => (
-                                <li
-                                  key={detailIndex}
-                                  className="text-sm text-gray-600 flex items-start"
-                                >
-                                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                                  {detail}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                              <h6 className="font-medium text-gray-800 mb-2">
-                                Timeline:
-                              </h6>
-                              <p className="text-sm text-gray-600">
-                                {component.timeline}
-                              </p>
-                            </div>
-                            <div>
-                              <h6 className="font-medium text-gray-800 mb-2">
-                                What You Need to Provide:
-                              </h6>
-                              <ul className="text-sm text-gray-600 space-y-1">
-                                {component.requirements.map((req, reqIndex) => (
-                                  <li
-                                    key={reqIndex}
-                                    className="flex items-start"
-                                  >
-                                    <Target className="w-3 h-3 text-blue-500 mr-2 mt-1 flex-shrink-0" />
-                                    {req}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div>
+                        <h6 className="font-medium text-gray-800 mb-2">
+                          What This Includes:
+                        </h6>
+                        <ul className="space-y-1">
+                          {component.details.map((detail, detailIndex) => (
+                            <li
+                              key={detailIndex}
+                              className="text-sm text-gray-600 flex items-start"
+                            >
+                              <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                              {detail}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-              <div className="space-y-4 mb-6">
-                <div className="bg-white p-6 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    How We&apos;ll Build This:
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {generatedStrategy?.implementation}
-                  </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <h6 className="font-medium text-gray-800 mb-2">
+                            Timeline:
+                          </h6>
+                          <p className="text-sm text-gray-600">
+                            {component.timeline}
+                          </p>
+                        </div>
+                        <div>
+                          <h6 className="font-medium text-gray-800 mb-2">
+                            What You Need to Provide:
+                          </h6>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            {component.requirements.map((req, reqIndex) => (
+                              <li key={reqIndex} className="flex items-start">
+                                <Target className="w-3 h-3 text-blue-500 mr-2 mt-1 flex-shrink-0" />
+                                {req}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                <div className="bg-white p-6 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    What You Should Do Outside Our Platform:
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    {generatedStrategy?.externalActions}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={() => setStep(2)}>
-              <Edit className="w-4 h-4 mr-2" />
-              Edit Campaign Details
-            </Button>
-            <div className="space-x-2">
-              <Button variant="outline">
-                <Eye className="w-4 h-4 mr-2" />
-                Full Preview
-              </Button>
-              <Button
-                onClick={approveStrategy}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-              >
-                Approve & Implement
-                <CheckCircle className="w-4 h-4 ml-2" />
-              </Button>
+              ))}
             </div>
           </div>
-        </div>
-      </main>
-    </div>
-  );
 
-  const renderStep4 = () => (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-6"></main>
-      <div className="space-y-6">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-4">
-            <CheckCircle className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Campaign Successfully Created!
-          </h2>
-          <p className="text-gray-600">Your campaign is now ready to use</p>
-        </div>
-
-        <Card className="border-2 border-green-200 bg-green-50">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Target className="w-5 h-5 text-green-600" />
-              <span>Campaign: &quot;{generatedStrategy?.title}&quot;</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {generatedStrategy?.components.map((component, index) => (
-                  <div
-                    key={index}
-                    className="p-4 bg-white rounded-lg border border-green-200"
-                  >
-                    <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
-                      <component.icon className="w-4 h-4 mr-2" />
-                      {component.title}
-                    </h4>
-                    <p className="text-sm text-gray-600 mb-4">
-                      {component.description}
-                    </p>
-                    <div className="space-y-2">
-                      <Button size="sm" className="w-full">
-                        <Eye className="w-3 h-3 mr-1" />
-                        View Result
-                      </Button>
-                      <Button size="sm" variant="outline" className="w-full">
-                        <Edit className="w-3 h-3 mr-1" />
-                        Edit
-                      </Button>
-                      <Button size="sm" variant="outline" className="w-full">
-                        <TrendingUp className="w-3 h-3 mr-1" />
-                        View Analytics
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-white p-6 rounded-lg border border-green-200">
-                <h4 className="font-semibold text-gray-900 mb-4">
-                  Campaign Management
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <Button className="w-full">
-                    <Play className="w-4 h-4 mr-2" />
-                    Launch Campaign
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <Eye className="w-4 h-4 mr-2" />
-                    Preview All
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Strategy
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <TrendingUp className="w-4 h-4 mr-2" />
-                    Analytics Dashboard
-                  </Button>
-                </div>
-              </div>
+          <div className="space-y-4 mb-6">
+            <div className="bg-white p-6 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-gray-900 mb-3">
+                How We&apos;ll Build This:
+              </h4>
+              <p className="text-sm text-gray-600 mb-4">
+                {generatedStrategy?.implementation}
+              </p>
             </div>
-          </CardContent>
-        </Card>
 
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={() => setStep(1)}>
-            Create New Campaign
+            <div className="bg-white p-6 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-gray-900 mb-3">
+                What You Should Do Outside Our Platform:
+              </h4>
+              <p className="text-sm text-gray-600">
+                {generatedStrategy?.externalActions}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={() => setStep(2)}>
+          <Edit className="w-4 h-4 mr-2" />
+          Edit Campaign Details
+        </Button>
+        <div className="space-x-2">
+          <Button variant="outline">
+            <Eye className="w-4 h-4 mr-2" />
+            Full Preview
           </Button>
-          <Link
-            href="/dashboard"
-            className="text-sm flex items-center gap-2 bg-white rounded hover:bg-gray-100 border border-gray-200 px-4 py-2 text-gray-600 hover:text-gray-900"
+          <Button
+            onClick={approveStrategy}
+            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
           >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </Link>
+            Approve & Implement
+            <CheckCircle className="w-4 h-4 ml-2" />
+          </Button>
         </div>
       </div>
     </div>
   );
 
-  const renderImplementationProgress = () => (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <div className="space-y-6">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-4 animate-pulse">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              AI is Building Your Campaign...
-            </h2>
-            <p className="text-gray-600">
-              Creating your personalized marketing assets and setting up
-              automation
-            </p>
-          </div>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {generatedStrategy?.components.map((component, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-gray-900">
-                      {component.title} - Complete
-                    </span>
-                  </div>
-                ))}
-                <div className="flex items-center space-x-3">
-                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-gray-900">
-                    Finalizing implementation and testing...
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+  const renderStep4 = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-4">
+          <CheckCircle className="w-8 h-8 text-white" />
         </div>
-      </main>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Campaign Successfully Created!
+        </h2>
+        <p className="text-gray-600">Your campaign is now ready to use</p>
+      </div>
+
+      <Card className="border-2 border-green-200 bg-green-50">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Target className="w-5 h-5 text-green-600" />
+            <span>Campaign: &quot;{generatedStrategy?.title}&quot;</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {generatedStrategy?.components.map((component, index) => (
+                <div
+                  key={index}
+                  className="p-4 bg-white rounded-lg border border-green-200"
+                >
+                  <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
+                    <component.icon className="w-4 h-4 mr-2" />
+                    {component.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {component.description}
+                  </p>
+                  <div className="space-y-2">
+                    <Button size="sm" className="w-full">
+                      <Eye className="w-3 h-3 mr-1" />
+                      View Result
+                    </Button>
+                    <Button size="sm" variant="outline" className="w-full">
+                      <Edit className="w-3 h-3 mr-1" />
+                      Edit
+                    </Button>
+                    <Button size="sm" variant="outline" className="w-full">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      View Analytics
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-white p-6 rounded-lg border border-green-200">
+              <h4 className="font-semibold text-gray-900 mb-4">
+                Campaign Management
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Button className="w-full">
+                  <Play className="w-4 h-4 mr-2" />
+                  Launch Campaign
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Preview All
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Strategy
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Analytics Dashboard
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={() => setStep(1)}>
+          Create New Campaign
+        </Button>
+        <Button
+          onClick={onBack}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Button>
+      </div>
+    </div>
+  );
+
+  const renderImplementationProgress = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-4 animate-pulse">
+          <Sparkles className="w-8 h-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          AI is Building Your Campaign...
+        </h2>
+        <p className="text-gray-600">
+          Creating your personalized marketing assets and setting up automation
+        </p>
+      </div>
+
+      <Card>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            {generatedStrategy?.components.map((component, index) => (
+              <div key={index} className="flex items-center space-x-3">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className="text-gray-900">
+                  {component.title} - Complete
+                </span>
+              </div>
+            ))}
+            <div className="flex items-center space-x-3">
+              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-gray-900">
+                Finalizing implementation and testing...
+              </span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center space-x-4 mb-8">
-            <Link
-              href="/dashboard"
-              className="text-sm flex items-center gap-2 bg-white rounded hover:bg-gray-100 border border-gray-200 px-4 py-2 text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back
-            </Link>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2">
-                {[1, 2, 3, 4].map((stepNumber) => (
-                  <div key={stepNumber} className="flex items-center">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        step >= stepNumber
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-600"
-                      }`}
-                    >
-                      {stepNumber}
-                    </div>
-                    {stepNumber < 4 && (
-                      <div
-                        className={`w-12 h-1 ${
-                          step > stepNumber ? "bg-blue-600" : "bg-gray-200"
-                        }`}
-                      />
-                    )}
-                  </div>
-                ))}
+    <div className="max-w-6xl mx-auto">
+      <div className="flex items-center space-x-4 mb-8">
+        <Button variant="ghost" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Button>
+        <div className="flex-1">
+          <div className="flex items-center space-x-2">
+            {[1, 2, 3, 4].map((stepNumber) => (
+              <div key={stepNumber} className="flex items-center">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    step >= stepNumber
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-600"
+                  }`}
+                >
+                  {stepNumber}
+                </div>
+                {stepNumber < 4 && (
+                  <div
+                    className={`w-12 h-1 ${
+                      step > stepNumber ? "bg-blue-600" : "bg-gray-200"
+                    }`}
+                  />
+                )}
               </div>
-            </div>
+            ))}
           </div>
-
-          <Card className="shadow-lg">
-            <CardContent className="p-8">
-              {step === 1 && renderStep1()}
-              {step === 2 && renderStep2()}
-              {step === 3 && !isImplementing && renderStep3()}
-              {isImplementing && renderImplementationProgress()}
-              {step === 4 && implementationComplete && renderStep4()}
-            </CardContent>
-          </Card>
         </div>
-      </main>
+      </div>
+
+      <Card className="shadow-lg">
+        <CardContent className="p-8">
+          {step === 1 && renderStep1()}
+          {step === 2 && renderStep2()}
+          {step === 3 && !isImplementing && renderStep3()}
+          {isImplementing && renderImplementationProgress()}
+          {step === 4 && implementationComplete && renderStep4()}
+        </CardContent>
+      </Card>
     </div>
   );
 };

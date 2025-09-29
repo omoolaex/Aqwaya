@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import Sidebar from "../Sidebar";
 
 // Local User type
 type AIStrategy = {
@@ -531,8 +530,6 @@ const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-6">
@@ -604,7 +601,7 @@ const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
                 </Button>
 
                 {currentStep < 3 ? (
-                  <Button onClick={() => setCurrentStep(currentStep + 1)}>
+                  <Button onClick={() => setCurrentStep(currentStep + 1)} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                     Next
                   </Button>
                 ) : (

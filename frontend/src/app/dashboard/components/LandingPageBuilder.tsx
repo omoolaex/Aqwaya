@@ -16,20 +16,19 @@ import { useToast } from "@/hooks/use-toast";
 
 import React from "react";
 
-import PreviewModal from "../../components/landing-page/PreviewModal";
-import DeleteModal from "../../components/landing-page/DeleteModal";
-import UserPagesList from "../../components/landing-page/UserPagesList";
-import AIGeneratedContentEdit from "../../components/landing-page/AIGeneratedContentEdit";
-import AIGeneratedContentPreview from "../../components/landing-page/AIGeneratedContentPreview";
+import PreviewModal from "./landing-page/PreviewModal";
+import DeleteModal from "./landing-page/DeleteModal";
+import UserPagesList from "./landing-page/UserPagesList";
+import AIGeneratedContentEdit from "./landing-page/AIGeneratedContentEdit";
+import AIGeneratedContentPreview from "./landing-page/AIGeneratedContentPreview";
 
-import BasicInfoStep from "../../components/landing-page/steps/BasicInfoStep";
-import TemplateSelectStep from "../../components/landing-page/steps/TemplateSelectStep";
-import ColorSchemeStep from "../../components/landing-page/steps/ColorSchemeStep";
-import GenerationProgress from "../../components/landing-page/steps/GenerationProgress";
-import LandingPagePreviewCard from "../../components/landing-page/steps/LandingPagePreviewCard";
-import PagePerformanceTools from "../../components/landing-page/steps/PagePerformanceTools";
-import { useLandingBuilderSteps } from "../../components/landing-page/useLandingBuilderSteps";
-import Sidebar from "../../components/Sidebar";
+import BasicInfoStep from "./landing-page/steps/BasicInfoStep";
+import TemplateSelectStep from "./landing-page/steps/TemplateSelectStep";
+import ColorSchemeStep from "./landing-page/steps/ColorSchemeStep";
+import GenerationProgress from "./landing-page/steps/GenerationProgress";
+import LandingPagePreviewCard from "./landing-page/steps/LandingPagePreviewCard";
+import PagePerformanceTools from "./landing-page/steps/PagePerformanceTools";
+import { useLandingBuilderSteps } from "./landing-page/useLandingBuilderSteps";
 import { LandingPage, Template, ColorScheme } from "@/types/landing";
 
 interface LandingPageBuilderProps {
@@ -452,165 +451,149 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      <Sidebar />
+    <div className="space-y-6">
+      {renderPreviewModal()}
+      {renderDeleteModal()}
 
-      <main className="flex-1 p-6">
-        <div className="space-y-6">
-          {renderPreviewModal()}
-          {renderDeleteModal()}
-
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="outline"
-                onClick={onBack}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
-                  <Globe className="w-8 h-8 text-orange-500" />
-                  <span>AI Landing Page Builder</span>
-                </h1>
-                <p className="text-gray-600">
-                  Create high-converting landing pages with AI assistance
-                </p>
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                disabled={currentStep !== 5 || !generationComplete}
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                Preview
-              </Button>
-              <Button
-                variant="outline"
-                disabled={currentStep !== 5 || !generationComplete}
-              >
-                <Code className="w-4 h-4 mr-2" />
-                View Code
-              </Button>
-            </div>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            onClick={onBack}
+            className="flex items-center space-x-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back</span>
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
+              <Globe className="w-8 h-8 text-orange-500" />
+              <span>AI Landing Page Builder</span>
+            </h1>
+            <p className="text-gray-600">
+              Create high-converting landing pages with AI assistance
+            </p>
           </div>
-
-          {/* Progress Steps */}
-          <div className="flex items-center space-x-4 mb-8">
-            {[1, 2, 3, 4, 5].map((step) => (
-              <div key={step} className="flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    currentStep >= step
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-600"
-                  }`}
-                >
-                  {step}
-                </div>
-                {step < 5 && (
-                  <div
-                    className={`w-16 h-1 ${
-                      currentStep > step ? "bg-blue-600" : "bg-gray-200"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Step Labels */}
-          <div className="flex justify-between text-sm text-gray-600 mb-6">
-            <span
-              className={currentStep === 1 ? "font-medium text-blue-600" : ""}
-            >
-              Basic Info
-            </span>
-            <span
-              className={currentStep === 2 ? "font-medium text-blue-600" : ""}
-            >
-              Choose Template
-            </span>
-            <span
-              className={currentStep === 3 ? "font-medium text-blue-600" : ""}
-            >
-              Pick Colors
-            </span>
-            <span
-              className={currentStep === 4 ? "font-medium text-blue-600" : ""}
-            >
-              AI Generation
-            </span>
-            <span
-              className={currentStep === 5 ? "font-medium text-blue-600" : ""}
-            >
-              Your Pages
-            </span>
-          </div>
-
-          {/* Step Content */}
-          <Card>
-            <CardContent className="p-8">{renderStepContent()}</CardContent>
-          </Card>
-
-          {/* Navigation */}
-          {!isGenerating && currentStep < 5 && (
-            <div className="flex justify-between">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentStep === 1}
-              >
-                Previous
-              </Button>
-              <Button
-                onClick={handleNext}
-                disabled={!canProceedToStep(currentStep)}
-                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-              >
-                {currentStep === 3 ? "Generate Landing Page" : "Next"}
-              </Button>
-            </div>
-          )}
-
-          {currentStep === 5 && (
-            <div className="flex justify-between">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setCurrentStep(1);
-                  setFormData({
-                    pageName: "",
-                    businessName: "",
-                    industry: "",
-                    goal: "",
-                    targetAudience: "",
-                    valueProposition: "",
-                    template: "",
-                    colorScheme: "",
-                  });
-                  setAIContent(null);
-                  setEditMode(false);
-                  setGenerationComplete(false);
-                }}
-              >
-                Create New Page
-              </Button>
-              <Button
-                onClick={onBack}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
-              </Button>
-            </div>
-          )}
         </div>
-      </main>
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            disabled={currentStep !== 5 || !generationComplete}
+          >
+            <Eye className="w-4 h-4 mr-2" />
+            Preview
+          </Button>
+          <Button
+            variant="outline"
+            disabled={currentStep !== 5 || !generationComplete}
+          >
+            <Code className="w-4 h-4 mr-2" />
+            View Code
+          </Button>
+        </div>
+      </div>
+
+      {/* Progress Steps */}
+      <div className="flex items-center space-x-4 mb-8">
+        {[1, 2, 3, 4, 5].map((step) => (
+          <div key={step} className="flex items-center">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                currentStep >= step
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+            >
+              {step}
+            </div>
+            {step < 5 && (
+              <div
+                className={`w-16 h-1 ${
+                  currentStep > step ? "bg-blue-600" : "bg-gray-200"
+                }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Step Labels */}
+      <div className="flex justify-between text-sm text-gray-600 mb-6">
+        <span className={currentStep === 1 ? "font-medium text-blue-600" : ""}>
+          Basic Info
+        </span>
+        <span className={currentStep === 2 ? "font-medium text-blue-600" : ""}>
+          Choose Template
+        </span>
+        <span className={currentStep === 3 ? "font-medium text-blue-600" : ""}>
+          Pick Colors
+        </span>
+        <span className={currentStep === 4 ? "font-medium text-blue-600" : ""}>
+          AI Generation
+        </span>
+        <span className={currentStep === 5 ? "font-medium text-blue-600" : ""}>
+          Your Pages
+        </span>
+      </div>
+
+      {/* Step Content */}
+      <Card>
+        <CardContent className="p-8">{renderStepContent()}</CardContent>
+      </Card>
+
+      {/* Navigation */}
+      {!isGenerating && currentStep < 5 && (
+        <div className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={handleNext}
+            disabled={!canProceedToStep(currentStep)}
+            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+          >
+            {currentStep === 3 ? "Generate Landing Page" : "Next"}
+          </Button>
+        </div>
+      )}
+
+      {currentStep === 5 && (
+        <div className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setCurrentStep(1);
+              setFormData({
+                pageName: "",
+                businessName: "",
+                industry: "",
+                goal: "",
+                targetAudience: "",
+                valueProposition: "",
+                template: "",
+                colorScheme: "",
+              });
+              setAIContent(null);
+              setEditMode(false);
+              setGenerationComplete(false);
+            }}
+          >
+            Create New Page
+          </Button>
+          <Button
+            onClick={onBack}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

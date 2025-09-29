@@ -17,7 +17,6 @@ import {
   Target,
 } from "lucide-react";
 import { Campaign } from "@/types/campaign";
-import Sidebar from "../Sidebar";
 
 interface CampaignDetailsProps {
   campaign: Campaign;
@@ -81,8 +80,6 @@ const CampaignDetails = ({
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-6">
