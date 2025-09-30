@@ -10,8 +10,6 @@ import {
   MessageSquare,
   BarChart3,
   Settings,
-  Workflow,
-  FileText,
   Globe,
   Bot,
   Sparkles,
@@ -33,20 +31,18 @@ const Sidebar = ({ currentView, onViewChange }: SidebarProps) => {
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "ai-builder", label: "AI Prompt Builder", icon: Zap },
+    { id: "AIPromptBuilder", label: "AI Prompt Builder", icon: Zap },
     { id: "campaigns", label: "Campaigns", icon: Target },
-    { id: "landing-pages", label: "Landing Pages", icon: Globe },
+    { id: "landingPages", label: "Landing Pages", icon: Globe },
     { id: "leads", label: "Leads", icon: Users },
     {
-      id: "email",
+      id: "emailMarketing",
       label: "AI Email Marketing",
       icon: Bot,
       isAI: true,
       description: "Powered by AI",
     },
     { id: "sms", label: "SMS & WhatsApp", icon: MessageSquare },
-    { id: "automations", label: "Automations", icon: Workflow },
-    { id: "templates", label: "Templates", icon: FileText },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
   ];
