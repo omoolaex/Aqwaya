@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,74 +15,52 @@ import {
   Calendar,
 } from "lucide-react";
 
+interface Lead {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  source: string;
+  campaign: string;
+  status: "New" | "Qualified" | "Contacted";
+  score: number;
+  date: string;
+}
+
+interface Stat {
+  label: string;
+  value: string;
+  change: string;
+  color: string;
+}
+
 interface LeadsOverviewProps {
   onBack: () => void;
 }
 
 const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
-  const leads = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.j@email.com",
-      phone: "+1 (555) 123-4567",
-      source: "Landing Page",
-      campaign: "Summer Sale 2024",
-      status: "New",
-      score: 85,
-      date: "2024-01-15",
-    },
-    {
-      id: 2,
-      name: "Mike Chen",
-      email: "mike.chen@company.com",
-      phone: "+1 (555) 987-6543",
-      source: "Email Campaign",
-      campaign: "Product Launch",
-      status: "Qualified",
-      score: 92,
-      date: "2024-01-14",
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      email: "emily.r@startup.io",
-      phone: "+1 (555) 456-7890",
-      source: "WhatsApp",
-      campaign: "Follow-up Flow",
-      status: "Contacted",
-      score: 78,
-      date: "2024-01-13",
-    },
-  ];
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    {
-      label: "Total Leads",
-      value: "2,847",
-      change: "+12.5%",
-      color: "text-blue-600",
-    },
-    {
-      label: "Qualified Leads",
-      value: "1,234",
-      change: "+8.3%",
-      color: "text-green-600",
-    },
-    {
-      label: "Conversion Rate",
-      value: "43.4%",
-      change: "+5.1%",
-      color: "text-purple-600",
-    },
-    {
-      label: "Avg. Lead Score",
-      value: "84",
-      change: "+2.8%",
-      color: "text-orange-600",
-    },
-  ];
+  useEffect(() => {
+    fetch("/api/leads")
+      .then((res) => res.json())
+      .then((data: { leads: Lead[]; stats: Stat[] }) => {
+        setLeads(data.leads);
+        setStats(data.stats);
+      })
+      .catch((err) => console.error("Error fetching leads:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Loading leads...</p>
+      </div>
+    );
+  }
   return (
     <div className="space-y-6">
       {/* Header */}

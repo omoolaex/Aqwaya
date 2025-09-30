@@ -86,7 +86,7 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
 
   // Fetch email data from API
   useEffect(() => {
-    fetch("/api/email")
+    fetch("/api/emailMarketing")
       .then((res) => res.json())
       .then((json) => {
         setCampaigns(json.campaigns);

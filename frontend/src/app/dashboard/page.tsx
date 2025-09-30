@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,6 @@ import {
 import Sidebar from "./components/Sidebar";
 import AIPromptBuilder from "./components/AIPromptBuilder";
 import CampaignOverview from "./components/CampaignOverview";
-import LandingPageBuilder from "./components/LandingPageBuilder";
 import LandingPagesOverview from "./components/LandingPagesOverview";
 import LeadsOverview from "./components/LeadsOverview";
 import EmailMarketing from "./components/EmailMarketing";
@@ -91,7 +91,7 @@ const Dashboard = () => {
     tool: "landing-page" | "email" | "sms-whatsapp"
   ) => {
     setSpecificTool(tool);
-    setCurrentView("ai-builder");
+    setCurrentView("AIPromptBuilder");
   };
 
   const handleBackFromAI = () => {
@@ -101,18 +101,18 @@ const Dashboard = () => {
 
   // Direct access to landing page builder
   const handleLandingPageBuilder = () => {
-    setCurrentView("landing-page-builder");
+    setCurrentView("landingPages");
   };
 
   // Handle AI Campaign Builder click - should go to AI Prompt Builder with no specific tool
   const handleAICampaignBuilder = () => {
     setSpecificTool(null);
-    setCurrentView("ai-builder");
+    setCurrentView("AIPromptBuilder");
   };
 
   const renderContent = () => {
     switch (currentView) {
-      case "ai-builder":
+      case "AIPromptBuilder":
         return (
           <AIPromptBuilder
             onBack={handleBackFromAI}
@@ -121,20 +121,20 @@ const Dashboard = () => {
         );
       case "campaigns":
         return <CampaignOverview onBack={() => setCurrentView("dashboard")} />;
-      case "landing-pages":
+      case "landingPages":
         return (
           <LandingPagesOverview
             onBack={() => setCurrentView("dashboard")}
             onCreateNew={handleLandingPageBuilder}
           />
         );
-      case "landing-page-builder":
+      case "landingPages":
         return (
-          <LandingPageBuilder onBack={() => setCurrentView("dashboard")} />
+          <LandingPagesOverview onBack={() => setCurrentView("dashboard")} />
         );
       case "leads":
         return <LeadsOverview onBack={() => setCurrentView("dashboard")} />;
-      case "email":
+      case "emailMarketing":
         return <EmailMarketing onBack={() => setCurrentView("dashboard")} />;
       case "sms":
         return (

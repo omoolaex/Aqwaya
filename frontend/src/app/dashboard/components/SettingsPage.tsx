@@ -334,7 +334,9 @@ const SettingsPage = ({ onBack }: SettingsPageProps) => {
                 </div>
               ))}
               {category.title === "Profile Settings" && (
-                <Button className="w-full mt-4">Save Changes</Button>
+                <Button variant="outline" className="w-full mt-4 bg-gray-900 text-white">
+                  Save Changes
+                </Button>
               )}
               {category.title === "Billing" && (
                 <div className="space-y-2 mt-4">
@@ -375,7 +377,7 @@ const SettingsPage = ({ onBack }: SettingsPageProps) => {
                 Permanently delete your account and all data
               </p>
             </div>
-            <Button variant="destructive">Delete</Button>
+            <Button variant="destructive" className="text-white bg-red-400">Delete</Button>
           </div>
         </CardContent>
       </Card>
