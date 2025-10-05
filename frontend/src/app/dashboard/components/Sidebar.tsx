@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Zap,
@@ -16,6 +17,7 @@ import {
   Wand2,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,11 +25,35 @@ interface SidebarProps {
   currentView: string;
   onViewChange: (view: string) => void;
 }
+const capitalizeFullName = (name: string): string => {
+  if (!name) return "Sarah Johnson";
+  return name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};
 
 const Sidebar = ({ currentView, onViewChange }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
+  const router = useRouter();
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserName(user.username);
+    }
+  }, []);
+  const firstLetter = userName ? userName.charAt(0).toUpperCase() : "U";
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/auth/login");
+  };
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -168,11 +194,13 @@ const Sidebar = ({ currentView, onViewChange }: SidebarProps) => {
           <div className="p-4 border-t border-gray-200">
             <div className="flex items-center space-x-3 p-3 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-semibold">S</span>
+                <span className="text-white text-sm font-semibold">
+                  {firstLetter}
+                </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  Sarah Johnson
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {capitalizeFullName(userName) || "Sarah Johnson"}
                 </p>
                 <p className="text-xs text-purple-600 truncate flex items-center space-x-1">
                   <Sparkles className="w-3 h-3" />
@@ -180,6 +208,17 @@ const Sidebar = ({ currentView, onViewChange }: SidebarProps) => {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Logout button */}
+          <div className="px-4 pt-1 border-t border-gray-200">
+            <button
+              onClick={handleLogout}
+              className="mt-3 mb-2 flex items-center gap-2 w-full px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition text-left"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
           </div>
         </div>
       </aside>
