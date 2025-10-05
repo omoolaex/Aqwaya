@@ -69,40 +69,49 @@ export default function AnalyticsOverview({ onBack }: AnalyticsOverviewProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        {/* Left: Back + Title */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={onBack}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 w-fit"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold flex items-center space-x-2">
-              <BarChart3 className="w-8 h-8 text-blue-500" />
+            <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+              <BarChart3 className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
               <span>Analytics</span>
             </h1>
-            <p className="text-gray-600">Track your marketing performance</p>
+            <p className="text-sm md:text-base text-gray-600">
+              Track your marketing performance
+            </p>
           </div>
         </div>
-        <Button variant="outline">Export Report</Button>
+
+        {/* Right: Export Button */}
+        <Button variant="outline" className="w-full sm:w-auto">
+          Export Report
+        </Button>
       </div>
 
-      {/* Overall Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Overall Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {data.overallStats.map((stat, idx) => {
           const Icon = iconMap[stat.icon];
           return (
             <Card key={idx}>
-              <CardContent className="p-6 flex justify-between">
+              <CardContent className="p-6 flex justify-between items-center gap-4">
                 <div>
-                  <div className="text-2xl font-bold">{stat.value}</div>
+                  <div className="text-xl md:text-2xl font-bold">
+                    {stat.value}
+                  </div>
                   <div className="text-sm text-gray-600">{stat.label}</div>
                   <div className={`text-sm ${stat.color}`}>{stat.change}</div>
                 </div>
-                <Icon className={`w-8 h-8 ${stat.color}`} />
+                <Icon className={`w-6 h-6 md:w-8 md:h-8 ${stat.color}`} />
               </CardContent>
             </Card>
           );
@@ -121,9 +130,10 @@ export default function AnalyticsOverview({ onBack }: AnalyticsOverviewProps) {
               return (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                  className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-gray-200 rounded-lg gap-4"
                 >
-                  <div className="flex items-center space-x-4">
+                  {/* Channel + Icon */}
+                  <div className="flex items-center gap-4">
                     <div
                       className={`w-12 h-12 bg-gradient-to-r ${ch.bgColor} rounded-lg flex items-center justify-center`}
                     >
@@ -134,18 +144,30 @@ export default function AnalyticsOverview({ onBack }: AnalyticsOverviewProps) {
                       <p className="text-sm text-gray-600">Marketing Channel</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-8 text-sm">
-                    <div className="text-center">
-                      <p className="font-semibold text-lg">{ch.leads}</p>
-                      <p className="text-gray-600">Leads</p>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-sm text-center sm:text-left">
+                    <div>
+                      <p className="font-semibold text-base sm:text-lg">
+                        {ch.leads}
+                      </p>
+                      <p className="text-gray-600 text-xs sm:text-sm">Leads</p>
                     </div>
-                    <div className="text-center">
-                      <p className="font-semibold text-lg">{ch.conversion}</p>
-                      <p className="text-gray-600">Conversion</p>
+                    <div>
+                      <p className="font-semibold text-base sm:text-lg">
+                        {ch.conversion}
+                      </p>
+                      <p className="text-gray-600 text-xs sm:text-sm">
+                        Conversion
+                      </p>
                     </div>
-                    <div className="text-center">
-                      <p className="font-semibold text-lg">{ch.revenue}</p>
-                      <p className="text-gray-600">Revenue</p>
+                    <div>
+                      <p className="font-semibold text-base sm:text-lg">
+                        {ch.revenue}
+                      </p>
+                      <p className="text-gray-600 text-xs sm:text-sm">
+                        Revenue
+                      </p>
                     </div>
                   </div>
                 </div>

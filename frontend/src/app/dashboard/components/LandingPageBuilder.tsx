@@ -456,30 +456,35 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       {renderDeleteModal()}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
+        {/* Left section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={onBack}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 w-full sm:w-auto"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
-              <Globe className="w-8 h-8 text-orange-500" />
+
+          <div className="text-center sm:text-left mt-2 sm:mt-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center justify-center sm:justify-start space-x-2">
+              <Globe className="w-6 sm:w-8 h-6 sm:h-8 text-orange-500" />
               <span>AI Landing Page Builder</span>
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base">
               Create high-converting landing pages with AI assistance
             </p>
           </div>
         </div>
-        <div className="flex space-x-2">
+
+        {/* Right section (buttons) */}
+        <div className="flex flex-wrap justify-center sm:justify-end gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             disabled={currentStep !== 5 || !generationComplete}
+            className="w-full sm:w-auto"
           >
             <Eye className="w-4 h-4 mr-2" />
             Preview
@@ -487,6 +492,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
           <Button
             variant="outline"
             disabled={currentStep !== 5 || !generationComplete}
+            className="w-full sm:w-auto"
           >
             <Code className="w-4 h-4 mr-2" />
             View Code
@@ -495,9 +501,9 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       </div>
 
       {/* Progress Steps */}
-      <div className="flex items-center space-x-4 mb-8">
+      <div className="flex items-center justify-center sm:justify-start overflow-x-auto space-x-4 mb-8 px-1">
         {[1, 2, 3, 4, 5].map((step) => (
-          <div key={step} className="flex items-center">
+          <div key={step} className="flex items-center flex-shrink-0">
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep >= step
@@ -509,7 +515,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
             </div>
             {step < 5 && (
               <div
-                className={`w-16 h-1 ${
+                className={`w-12 sm:w-16 h-1 ${
                   currentStep > step ? "bg-blue-600" : "bg-gray-200"
                 }`}
               />
@@ -519,7 +525,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       </div>
 
       {/* Step Labels */}
-      <div className="flex justify-between text-sm text-gray-600 mb-6">
+      <div className="flex justify-between text-xs sm:text-sm text-gray-600 mb-6 overflow-x-auto px-1">
         <span className={currentStep === 1 ? "font-medium text-blue-600" : ""}>
           Basic Info
         </span>
@@ -538,24 +544,25 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       </div>
 
       {/* Step Content */}
-      <Card>
-        <CardContent className="p-8">{renderStepContent()}</CardContent>
+      <Card className="w-full">
+        <CardContent className="p-4 sm:p-8">{renderStepContent()}</CardContent>
       </Card>
 
-      {/* Navigation */}
+      {/* Navigation Buttons */}
       {!isGenerating && currentStep < 5 && (
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between gap-3">
           <Button
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 1}
+            className="w-full sm:w-auto"
           >
             Previous
           </Button>
           <Button
             onClick={handleNext}
             disabled={!canProceedToStep(currentStep)}
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+            className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
           >
             {currentStep === 3 ? "Generate Landing Page" : "Next"}
           </Button>
@@ -563,7 +570,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       )}
 
       {currentStep === 5 && (
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between gap-3">
           <Button
             variant="outline"
             onClick={() => {
@@ -582,12 +589,13 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
               setEditMode(false);
               setGenerationComplete(false);
             }}
+            className="w-full sm:w-auto"
           >
             Create New Page
           </Button>
           <Button
             onClick={onBack}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard

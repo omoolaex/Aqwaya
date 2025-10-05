@@ -64,7 +64,7 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col justify-between md:items-center gap-4">
         <div className="flex items-center space-x-4">
           <Button
             variant="outline"
@@ -82,7 +82,7 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
             <p className="text-gray-600">Manage and track your leads</p>
           </div>
         </div>
-        <Button className="bg-gradient-to-r from-blue-600 to-purple-600">
+        <Button className="w-sm mt-2 bg-gradient-to-r from-blue-600 to-purple-600">
           <Download className="w-4 h-4 mr-2" />
           Export Leads
         </Button>
@@ -109,41 +109,44 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
           <CardTitle>Lead Management</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
+          {/* Filters */}
+          <div className="flex flex-row flex-wrap gap-4 mb-6">
+            <div className="flex-grow relative min-w-[200px]">
               <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input placeholder="Search leads..." className="w-full pl-10" />
             </div>
-            <Button variant="outline">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
+            <div className="min-w-[120px]">
+              <Button variant="outline" className="w-full h-full">
+                <Filter className="w-4 h-4 mr-2" />
+                Filter
+              </Button>
+            </div>
           </div>
 
           {/* Leads Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-4">Name</th>
-                  <th className="text-left p-4">Contact</th>
-                  <th className="text-left p-4">Source</th>
-                  <th className="text-left p-4">Campaign</th>
-                  <th className="text-left p-4">Status</th>
-                  <th className="text-left p-4">Score</th>
-                  <th className="text-left p-4">Actions</th>
+          <div className="w-full overflow-x-auto rounded-lg border">
+            <table className="min-w-[800px] w-full text-sm">
+              <thead className="bg-gray-100">
+                <tr className="border-b text-left">
+                  <th className="p-4">Name</th>
+                  <th className="p-4">Contact</th>
+                  <th className="p-4">Source</th>
+                  <th className="p-4">Campaign</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Score</th>
+                  <th className="p-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {leads.map((lead) => (
                   <tr key={lead.id} className="border-b hover:bg-gray-50">
-                    <td className="p-4">
+                    <td className="p-4 min-w-[150px]">
                       <div>
                         <div className="font-medium">{lead.name}</div>
-                        <div className="text-sm text-gray-500">{lead.date}</div>
+                        <div className="text-xs text-gray-500">{lead.date}</div>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4 min-w-[180px]">
                       <div className="space-y-1">
                         <div className="text-sm">{lead.email}</div>
                         <div className="text-sm text-gray-500">
@@ -151,11 +154,11 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
                         </div>
                       </div>
                     </td>
-                    <td className="p-4">{lead.source}</td>
-                    <td className="p-4">{lead.campaign}</td>
-                    <td className="p-4">
+                    <td className="p-4 min-w-[120px]">{lead.source}</td>
+                    <td className="p-4 min-w-[120px]">{lead.campaign}</td>
+                    <td className="p-4 min-w-[100px]">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs ${
+                        className={`px-2 py-1 rounded-full text-xs whitespace-nowrap ${
                           lead.status === "New"
                             ? "bg-blue-100 text-blue-800"
                             : lead.status === "Qualified"
@@ -166,7 +169,7 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
                         {lead.status}
                       </span>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4 min-w-[150px]">
                       <div className="flex items-center space-x-2">
                         <div className="text-sm font-medium">{lead.score}</div>
                         <div className="w-16 h-2 bg-gray-200 rounded-full">
@@ -177,7 +180,7 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
                         </div>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4 min-w-[120px]">
                       <div className="flex space-x-2">
                         <Button size="sm" variant="outline">
                           <Mail className="w-3 h-3" />

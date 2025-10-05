@@ -292,44 +292,47 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
     );
   }
 
-  // Dashboard view - default starting view
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        {/* Left Section (Back button + Title + Description) */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
           <Button
             variant="outline"
             onClick={onBack}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 w-fit"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </Button>
+
           <div>
-            <h1 className="text-3xl font-bold flex items-center space-x-2">
-              <Bot className="w-8 h-8 text-primary" />
+            <h1 className="text-2xl md:text-3xl font-bold flex items-center space-x-2">
+              <Bot className="w-7 h-7 md:w-8 md:h-8 text-primary" />
               <span>AI Email Marketing</span>
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground mt-1">
               {strategies.length > 0
                 ? `${strategies.length} AI strategies created • ${campaigns.length} intelligent campaigns running`
                 : "Create intelligent email campaigns powered by advanced AI"}
             </p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
+
+        {/* Right Section (Buttons) */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={handleOpenAIStrategy}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 hover:from-purple-700 hover:to-blue-700"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 hover:from-purple-700 hover:to-blue-700 w-full sm:w-auto"
           >
             <Wand2 className="w-4 h-4 mr-2" />
             AI Strategy Builder
           </Button>
           <Button
             onClick={handleCreateCampaign}
-            className="text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 w-full sm:w-auto"
           >
             <Sparkles className="w-4 h-4 mr-2" />
             Create Campaign

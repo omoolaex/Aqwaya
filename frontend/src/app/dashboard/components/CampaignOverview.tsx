@@ -198,13 +198,13 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 md:p-8 overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" onClick={onBack}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            Back
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Campaigns</h1>
@@ -213,17 +213,18 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
             </p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap justify-start sm:justify-end gap-2">
           <Button
             variant="outline"
             onClick={() => setCurrentView("ai-builder")}
+            className="w-full sm:w-auto"
           >
             <Target className="w-4 h-4 mr-2" />
             AI Builder
           </Button>
           <Button
             onClick={() => setCurrentView("create")}
-            className="text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full sm:w-auto text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <Plus className="w-4 h-4 mr-2" />
             Create Campaign
@@ -232,14 +233,14 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
       </div>
 
       {/* Search */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             placeholder="Search campaigns..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 w-full"
           />
         </div>
         <Button variant="outline" className="shrink-0">
@@ -249,7 +250,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -324,7 +325,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
                 key={campaign.id}
                 className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                       <Target className="w-6 h-6 text-white" />
@@ -378,7 +379,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
                     >
                       {campaign.status}
                     </span>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center gap-2 justify-end">
                       <Button
                         size="sm"
                         variant="ghost"

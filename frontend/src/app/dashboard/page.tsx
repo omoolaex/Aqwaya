@@ -392,7 +392,7 @@ const Dashboard = () => {
     <AuthGuard>
       <div className="min-h-screen bg-gray-50 flex">
         <Sidebar currentView={currentView} onViewChange={setCurrentView} />
-        <main className="flex-1 p-8">{renderContent()}</main>
+        <main className="flex-1 p-6 md:p-8 pt-[80px]">{renderContent()}</main>
       </div>
     </AuthGuard>
   );

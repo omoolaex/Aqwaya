@@ -153,13 +153,13 @@ const CampaignDashboard = ({
   const getCampaignTypeIcon = (type: string) => {
     switch (type) {
       case "sequence":
-        return <Mail className='w-6 h-6' />;
+        return <Mail className="w-6 h-6" />;
       case "automation":
-        return <Users className='w-6 h-6' />;
+        return <Users className="w-6 h-6" />;
       case "one-time":
-        return <MousePointer className='w-6 h-6' />;
+        return <MousePointer className="w-6 h-6" />;
       default:
-        return <Mail className='w-6 h-6' />;
+        return <Mail className="w-6 h-6" />;
     }
   };
 
@@ -176,24 +176,26 @@ const CampaignDashboard = ({
   return (
     <div className="space-y-6">
       {/* Header with Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Search Input */}
+        <div className="w-full sm:max-w-md">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Search campaigns..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-full"
             />
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        {/* Filter and Button */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-auto"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -202,7 +204,7 @@ const CampaignDashboard = ({
             <option value="draft">Draft</option>
           </select>
 
-          <Button onClick={onCreateCampaign}>
+          <Button onClick={onCreateCampaign} className="w-full sm:w-auto">
             <Mail className="w-4 h-4 mr-2" />
             New Campaign
           </Button>
@@ -210,12 +212,12 @@ const CampaignDashboard = ({
       </div>
 
       {/* Campaigns Grid */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCampaigns.map((campaign) => (
           <Card key={campaign.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start space-x-3">
                   <div className="text-2xl">
                     {getCampaignTypeIcon(campaign.campaign_type)}
                   </div>
@@ -277,59 +279,53 @@ const CampaignDashboard = ({
             </CardHeader>
 
             <CardContent>
+              {/* Stats Grid - 2 columns on mobile, 5 on md+ */}
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-1">
-                    <Mail className="w-4 h-4 text-blue-500 mr-1" />
+                {[
+                  {
+                    icon: <Mail className="w-4 h-4 text-blue-500 mr-1" />,
+                    value: campaign.stats.sent.toLocaleString(),
+                    label: "Sent",
+                  },
+                  {
+                    icon: <Eye className="w-4 h-4 text-green-500 mr-1" />,
+                    value: calculateOpenRate(campaign.stats),
+                    label: "Open Rate",
+                  },
+                  {
+                    icon: (
+                      <MousePointer className="w-4 h-4 text-purple-500 mr-1" />
+                    ),
+                    value: calculateClickRate(campaign.stats),
+                    label: "Click Rate",
+                  },
+                  {
+                    icon: (
+                      <TrendingUp className="w-4 h-4 text-orange-500 mr-1" />
+                    ),
+                    value: campaign.stats.clicked,
+                    label: "Clicks",
+                  },
+                  {
+                    icon: <Users className="w-4 h-4 text-red-500 mr-1" />,
+                    value: campaign.stats.unsubscribed,
+                    label: "Unsubscribed",
+                  },
+                ].map((stat, idx) => (
+                  <div className="text-center" key={idx}>
+                    <div className="flex items-center justify-center mb-1">
+                      {stat.icon}
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {stat.value}
+                    </div>
+                    <div className="text-xs text-gray-600">{stat.label}</div>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {campaign.stats.sent.toLocaleString()}
-                  </div>
-                  <div className="text-xs text-gray-600">Sent</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-1">
-                    <Eye className="w-4 h-4 text-green-500 mr-1" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {calculateOpenRate(campaign.stats)}
-                  </div>
-                  <div className="text-xs text-gray-600">Open Rate</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-1">
-                    <MousePointer className="w-4 h-4 text-purple-500 mr-1" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {calculateClickRate(campaign.stats)}
-                  </div>
-                  <div className="text-xs text-gray-600">Click Rate</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-1">
-                    <TrendingUp className="w-4 h-4 text-orange-500 mr-1" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {campaign.stats.clicked}
-                  </div>
-                  <div className="text-xs text-gray-600">Clicks</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-1">
-                    <Users className="w-4 h-4 text-red-500 mr-1" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {campaign.stats.unsubscribed}
-                  </div>
-                  <div className="text-xs text-gray-600">Unsubscribed</div>
-                </div>
+                ))}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between text-sm text-gray-600">
+              {/* Footer Info */}
+              <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between text-sm text-gray-600 gap-1">
                 <span>Type: {campaign.campaign_type.replace("_", " ")}</span>
                 <span>
                   Created: {new Date(campaign.created_at).toLocaleDateString()}
@@ -340,6 +336,7 @@ const CampaignDashboard = ({
         ))}
       </div>
 
+      {/* Empty State */}
       {filteredCampaigns.length === 0 && (
         <Card>
           <CardContent className="p-8 text-center">
