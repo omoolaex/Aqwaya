@@ -31,13 +31,9 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
 
-  // Mock submit function (instead of Supabase)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const mockSubmitLead = (lead: { name: string; email: string }) =>
+  const mockSubmitLead = () =>
     new Promise<{ success: boolean }>((resolve) => {
-      setTimeout(() => {
-        resolve({ success: true });
-      }, 1200); // simulate API delay
+      setTimeout(() => resolve({ success: true }), 1200);
     });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,10 +51,7 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
     setLoading(true);
 
     try {
-      const result = await mockSubmitLead({
-        name: leadName,
-        email: leadEmail,
-      });
+      const result = await mockSubmitLead();
 
       if (result.success) {
         setSubmitted(true);
@@ -71,7 +64,7 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
       } else {
         throw new Error("Mock submission failed");
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Could not submit lead",
         description: "Try again.",
@@ -101,6 +94,7 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
               {formData.valueProposition ||
                 "Discover how our solution can help you achieve your goals"}
             </p>
+
             <div className="bg-gray-100 rounded-lg p-6 my-8">
               <h3 className="text-lg font-semibold mb-4">
                 Why Choose {formData.businessName}?
@@ -120,8 +114,10 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
                 </div>
               </div>
             </div>
+
             <div className="bg-blue-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Get Started Today</h3>
+
               {!submitted ? (
                 <form
                   className="max-w-md mx-auto space-y-3"
@@ -174,6 +170,7 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
                 </div>
               )}
             </div>
+
             <div className="text-sm text-gray-500">
               <p>
                 &quot;This has completely changed how we do business!&quot; -
@@ -182,6 +179,7 @@ const LandingPagePreviewCard: React.FC<Props> = ({ formData }) => {
             </div>
           </div>
         </div>
+
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <Button className="w-full">
             <Eye className="w-4 h-4 mr-2" />

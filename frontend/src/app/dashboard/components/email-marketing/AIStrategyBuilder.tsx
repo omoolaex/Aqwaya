@@ -25,34 +25,17 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import type { EmailStrategy } from "@/types/emailStrategy";
 
-// Local User type
-type AIStrategy = {
+interface User {
   id: string;
   name: string;
-  business_type: string;
-  marketing_goals: string[];
-  created_at: string;
-  generated_strategy: {
-    recommended_workflows: {
-      type: string;
-      name: string;
-      description: string;
-      suggested_emails: { subject: string }[];
-    }[];
-  };
-  target_audience_profile: {
-    description: string;
-    pain_points: string;
-    value_proposition: string;
-    industry: string;
-  };
-};
-
+  email?: string;
+}
 interface AIStrategyBuilderProps {
-  user: unknown;
+  user: User;
   onBack: () => void;
-  onComplete: (strategy: AIStrategy) => void;
+  onComplete: (strategy: EmailStrategy) => void;
 }
 
 const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
@@ -181,14 +164,66 @@ const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
     try {
       // Simulate AI strategy generation with mock data
       const aiStrategy = {
-        recommended_workflows: [
+        overview: {
+          business_assessment: "Strong online presence",
+          competitive_advantages: ["Personalized campaigns", "High CTR"],
+          target_audience_insights: "Young professionals 25–35 in e-commerce",
+        },
+        next_steps: [
+          { step: "Setup automation", action: "Connect CRM", priority: "high" },
           {
-            type: "welcome",
-            name: "Welcome Series",
-            description: "Introduce new subscribers to your brand.",
-            suggested_emails: [{ subject: "Welcome to our community!" }],
+            step: "Draft first campaign",
+            action: "Use AI writer",
+            priority: "medium",
           },
         ],
+        recommended_workflows: [
+          {
+            name: "Welcome Workflow",
+            type: "Automation",
+            description: "Send a series of emails for new subscribers",
+            suggested_emails: [
+              {
+                subject: "Welcome to our family!",
+                day: 1,
+                purpose: "Greeting",
+              },
+            ],
+            priority: "high",
+          },
+        ],
+        content_calendar: {
+          frequency_recommendation: "3x per week",
+          weekly_themes: [
+            { theme: "Customer Stories", content_type: "Email" },
+            { theme: "Promotions", content_type: "Email" },
+          ],
+        },
+        segmentation_strategy: {
+          primary_segments: [
+            {
+              name: "New Subscribers",
+              criteria: "Joined <30 days",
+              messaging_focus: "Onboarding",
+            },
+          ],
+          behavioral_triggers: [
+            { trigger: "No open after 7 days", action: "Resend email" },
+          ],
+        },
+        success_metrics: {
+          primary_kpis: [
+            {
+              metric: "Open Rate",
+              target: "40%",
+              industry_benchmark: "35%",
+            },
+          ],
+          optimization_recommendations: [
+            "Test subject lines weekly",
+            "Improve call-to-action buttons",
+          ],
+        },
       };
 
       // Simulate creating a strategy object
@@ -530,7 +565,6 @@ const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-
       {/* Main Content */}
       <main className="flex-1 p-6">
         <div className="space-y-6">
@@ -601,7 +635,10 @@ const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
                 </Button>
 
                 {currentStep < 3 ? (
-                  <Button onClick={() => setCurrentStep(currentStep + 1)} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                  <Button
+                    onClick={() => setCurrentStep(currentStep + 1)}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                  >
                     Next
                   </Button>
                 ) : (

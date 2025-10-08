@@ -11,6 +11,7 @@ import {
   Globe,
   MessageSquare,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 import { ComponentType, SVGProps } from "react";
 
@@ -60,8 +61,11 @@ export default function AnalyticsOverview({ onBack }: AnalyticsOverviewProps) {
 
   if (!data) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Loading analytics...</p>
+      <div className="flex flex-col justify-center items-center h-screen space-y-3">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-gray-600 text-sm sm:text-base">
+          Loading analytics...
+        </p>
       </div>
     );
   }

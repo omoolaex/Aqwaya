@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import type { EmailCampaign } from "@/types/emailCampaign";
 import {
   Mail,
   Search,
@@ -16,6 +17,7 @@ import {
   Users,
   MousePointer,
   Eye,
+  Loader2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,28 +26,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Local type definition for EmailCampaign
-type EmailCampaign = {
-  id: string;
-  user_id: string;
-  name: string;
-  subject_line: string;
-  campaign_type: string;
-  status: string;
-  target_segments: string[];
-  content: { html: string; text: string };
-  created_at: string;
-  updated_at: string;
-  stats: {
-    sent: number;
-    delivered: number;
-    opened: number;
-    clicked: number;
-    unsubscribed: number;
-    bounced: number;
-  };
-};
-
 interface CampaignDashboardProps {
   onCreateCampaign: () => void;
   onViewCampaign: (campaign: EmailCampaign) => void;
@@ -53,78 +33,35 @@ interface CampaignDashboardProps {
   user: unknown;
 }
 
-// Mock campaigns data
-const mockCampaigns: EmailCampaign[] = [
-  {
-    id: "campaign-1",
-    user_id: "mock-user",
-    name: "Welcome Series Campaign",
-    subject_line: "Welcome to our community!",
-    campaign_type: "sequence",
-    status: "active",
-    target_segments: ["new_subscribers"],
-    content: { html: "<h1>Welcome!</h1>", text: "Welcome!" },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    stats: {
-      sent: 1250,
-      delivered: 1200,
-      opened: 480,
-      clicked: 96,
-      unsubscribed: 5,
-      bounced: 15,
-    },
-  },
-  {
-    id: "campaign-2",
-    user_id: "mock-user",
-    name: "Product Launch Announcement",
-    subject_line: "Exciting new product just launched!",
-    campaign_type: "one-time",
-    status: "completed",
-    target_segments: ["all_subscribers"],
-    content: { html: "<h1>New Product</h1>", text: "New Product Launch" },
-    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    stats: {
-      sent: 3500,
-      delivered: 3400,
-      opened: 1360,
-      clicked: 272,
-      unsubscribed: 12,
-      bounced: 28,
-    },
-  },
-  {
-    id: "campaign-3",
-    user_id: "mock-user",
-    name: "Monthly Newsletter",
-    subject_line: "Your monthly update is here",
-    campaign_type: "automation",
-    status: "paused",
-    target_segments: ["engaged_users"],
-    content: { html: "<h1>Newsletter</h1>", text: "Newsletter content" },
-    created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-    stats: {
-      sent: 892,
-      delivered: 875,
-      opened: 385,
-      clicked: 67,
-      unsubscribed: 3,
-      bounced: 8,
-    },
-  },
-];
-
 const CampaignDashboard = ({
   onCreateCampaign,
   onViewCampaign,
   onEditCampaign,
 }: CampaignDashboardProps) => {
-  const [campaigns] = useState<EmailCampaign[]>(mockCampaigns);
+  const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // ---- Fetch from mock API ----
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await fetch("/api/emailMarketing");
+        if (!res.ok) throw new Error("Failed to fetch campaigns");
+        const data = await res.json();
+        setCampaigns(data.campaigns || []);
+      } catch (err) {
+        console.error("Error fetching campaigns:", err);
+        setError("Unable to load campaigns. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
 
   const filteredCampaigns = campaigns.filter((campaign) => {
     const matchesSearch =
@@ -173,11 +110,28 @@ const CampaignDashboard = ({
     return ((stats.clicked / stats.sent) * 100).toFixed(1) + "%";
   };
 
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="text-center py-12 text-gray-600">
+        <p>{error}</p>
+        <Button onClick={() => location.reload()} className="mt-4">
+          Retry
+        </Button>
+      </div>
+    );
+
   return (
     <div className="space-y-6">
-      {/* Header with Search and Filters */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        {/* Search Input */}
+        {/* Search */}
         <div className="w-full sm:max-w-md">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -190,7 +144,7 @@ const CampaignDashboard = ({
           </div>
         </div>
 
-        {/* Filter and Button */}
+        {/* Filter + Button */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <select
             value={filterStatus}
@@ -211,18 +165,23 @@ const CampaignDashboard = ({
         </div>
       </div>
 
-      {/* Campaigns Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Campaigns Grid - Responsive */}
+      <div className="grid grid-cols-1 gap-6">
         {filteredCampaigns.map((campaign) => (
-          <Card key={campaign.id} className="hover:shadow-lg transition-shadow">
+          <Card
+            key={campaign.id}
+            className="hover:shadow-xl border border-gray-200 transition-all duration-200"
+          >
             <CardHeader className="pb-4">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
-                  <div className="text-2xl">
+                  <div className="text-2xl text-gray-700">
                     {getCampaignTypeIcon(campaign.campaign_type)}
                   </div>
                   <div>
-                    <CardTitle className="text-lg">{campaign.name}</CardTitle>
+                    <CardTitle className="text-lg font-semibold">
+                      {campaign.name}
+                    </CardTitle>
                     <p className="text-sm text-gray-600 mt-1">
                       {campaign.subject_line}
                     </p>
@@ -279,52 +238,52 @@ const CampaignDashboard = ({
             </CardHeader>
 
             <CardContent>
-              {/* Stats Grid - 2 columns on mobile, 5 on md+ */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {/* Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-2">
                 {[
                   {
-                    icon: <Mail className="w-4 h-4 text-blue-500 mr-1" />,
+                    icon: <Mail className="w-5 h-5 text-blue-500" />,
                     value: campaign.stats.sent.toLocaleString(),
                     label: "Sent",
                   },
                   {
-                    icon: <Eye className="w-4 h-4 text-green-500 mr-1" />,
-                    value: calculateOpenRate(campaign.stats),
+                    icon: <Eye className="w-5 h-5 text-green-500" />,
+                    value: `${calculateOpenRate(campaign.stats)}%`,
                     label: "Open Rate",
                   },
                   {
-                    icon: (
-                      <MousePointer className="w-4 h-4 text-purple-500 mr-1" />
-                    ),
-                    value: calculateClickRate(campaign.stats),
+                    icon: <MousePointer className="w-5 h-5 text-purple-500" />,
+                    value: `${calculateClickRate(campaign.stats)}%`,
                     label: "Click Rate",
                   },
                   {
-                    icon: (
-                      <TrendingUp className="w-4 h-4 text-orange-500 mr-1" />
-                    ),
+                    icon: <TrendingUp className="w-5 h-5 text-orange-500" />,
                     value: campaign.stats.clicked,
                     label: "Clicks",
                   },
                   {
-                    icon: <Users className="w-4 h-4 text-red-500 mr-1" />,
+                    icon: <Users className="w-5 h-5 text-red-500" />,
                     value: campaign.stats.unsubscribed,
                     label: "Unsubscribed",
                   },
                 ].map((stat, idx) => (
-                  <div className="text-center" key={idx}>
-                    <div className="flex items-center justify-center mb-1">
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center bg-gray-50 rounded-lg py-3 hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center justify-center mb-2">
                       {stat.icon}
                     </div>
-                    <div className="text-2xl font-bold text-gray-900">
+                    <div className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
                       {stat.value}
                     </div>
-                    <div className="text-xs text-gray-600">{stat.label}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 mt-0.5">
+                      {stat.label}
+                    </div>
                   </div>
                 ))}
               </div>
 
-              {/* Footer Info */}
               <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between text-sm text-gray-600 gap-1">
                 <span>Type: {campaign.campaign_type.replace("_", " ")}</span>
                 <span>

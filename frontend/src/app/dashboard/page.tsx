@@ -12,6 +12,7 @@ import {
   DollarSign,
   Globe,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import AIPromptBuilder from "./components/AIPromptBuilder";
@@ -23,7 +24,34 @@ import SMSWhatsAppMarketing from "./components/SMSWhatsappMarketing";
 import AnalyticsOverview from "./components/AnalyticsOverview";
 import SettingsPage from "./components/SettingsPage";
 
+interface Stat {
+  title: string;
+  value: string;
+  change: string;
+  icon: "users" | "mail" | "message-square" | "dollar-sign";
+  color: string;
+}
+
+interface Campaign {
+  id: number;
+  name: string;
+  type: string;
+  status: string;
+  leads: number;
+  conversion: string;
+}
+
+const iconMap: Record<Stat["icon"], React.ReactElement> = {
+  users: <Users className="w-6 h-6 text-blue-600" />,
+  mail: <Mail className="w-6 h-6 text-green-600" />,
+  "message-square": <MessageSquare className="w-6 h-6 text-purple-600" />,
+  "dollar-sign": <DollarSign className="w-6 h-6 text-emerald-600" />,
+};
+
 const Dashboard = () => {
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [recentCampaigns, setRecentCampaigns] = useState<Campaign[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState("dashboard");
   const [specificTool, setSpecificTool] = useState<
     "landing-page" | "email" | "sms-whatsapp" | null
@@ -43,63 +71,31 @@ const Dashboard = () => {
     }
   }, []);
 
-  const stats = [
-    {
-      title: "Total Leads",
-      value: "2,847",
-      change: "+12.5%",
-      icon: Users,
-      color: "text-blue-600",
-    },
-    {
-      title: "Email Opens",
-      value: "68.3%",
-      change: "+5.2%",
-      icon: Mail,
-      color: "text-green-600",
-    },
-    {
-      title: "SMS Response Rate",
-      value: "24.1%",
-      change: "+8.1%",
-      icon: MessageSquare,
-      color: "text-purple-600",
-    },
-    {
-      title: "Revenue",
-      value: "$12,847",
-      change: "+18.7%",
-      icon: DollarSign,
-      color: "text-emerald-600",
-    },
-  ];
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch("/api/dashboard");
+        const data = await res.json();
+        setStats(data.stats);
+        setRecentCampaigns(data.recentCampaigns);
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const recentCampaigns = [
-    {
-      id: 1,
-      name: "Summer Sale Landing Page",
-      type: "Lead Generation",
-      status: "Active",
-      leads: 127,
-      conversion: "8.3%",
-    },
-    {
-      id: 2,
-      name: "Product Launch Email Series",
-      type: "Email Marketing",
-      status: "Active",
-      leads: 89,
-      conversion: "12.1%",
-    },
-    {
-      id: 3,
-      name: "WhatsApp Follow-up Flow",
-      type: "SMS/WhatsApp",
-      status: "Draft",
-      leads: 0,
-      conversion: "0%",
-    },
-  ];
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen space-y-3">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-gray-600">Loading dashboard data...</p>
+      </div>
+    );
+  }
 
   const handleAIToolClick = (
     tool: "landing-page" | "email" | "sms-whatsapp"
@@ -175,7 +171,7 @@ const Dashboard = () => {
               <Button
                 onClick={() => {
                   setSpecificTool(null);
-                  setCurrentView("ai-builder");
+                  setCurrentView("AIPromptBuilder");
                 }}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
@@ -204,7 +200,7 @@ const Dashboard = () => {
                       <div
                         className={`p-3 rounded-full bg-gray-50 ${stat.color}`}
                       >
-                        <stat.icon className="w-6 h-6" />
+                        {iconMap[stat.icon]}
                       </div>
                     </div>
                   </CardContent>

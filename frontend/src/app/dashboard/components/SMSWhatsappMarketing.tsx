@@ -10,6 +10,7 @@ import {
   Send,
   Users,
   TrendingUp,
+  Loader2,
 } from "lucide-react";
 
 interface SMSWhatsAppMarketingProps {
@@ -51,8 +52,11 @@ const SMSWhatsAppMarketing = ({ onBack }: SMSWhatsAppMarketingProps) => {
 
   if (!data) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Loading messaging...</p>
+      <div className="flex flex-col justify-center items-center h-screen space-y-3">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-gray-600 text-sm sm:text-base">
+          Loading messaging...
+        </p>
       </div>
     );
   }

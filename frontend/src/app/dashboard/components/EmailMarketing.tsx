@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
+
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import {
   Bot,
   Wand2,
   CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import CampaignDashboard from "./email-marketing/CampaignDashboard";
@@ -23,36 +23,8 @@ import CampaignCreator from "./email-marketing/CampaignCreator";
 import SegmentManager from "./email-marketing/SegmentManager";
 import AIStrategyBuilder from "./email-marketing/AIStrategyBuilder";
 import StrategyResults from "./email-marketing/StrategyResults";
-
-type EmailCampaign = {
-  id: string;
-  user_id: string;
-  name: string;
-  subject_line: string;
-  campaign_type: string;
-  status: string;
-  target_segments: string[];
-  content: { html: string; text: string };
-  stats: {
-    sent: number;
-    delivered: number;
-    opened: number;
-    clicked: number;
-    unsubscribed: number;
-    bounced: number;
-  };
-  created_at: string;
-  updated_at: string;
-};
-type EmailStrategy = {
-  id: string;
-  name: string;
-  business_type: string;
-  marketing_goals: string[];
-  created_at: string;
-  generated_strategy: any;
-  target_audience_profile?: { description?: string };
-};
+import { EmailStrategy } from "@/types/emailStrategy";
+import { EmailCampaign } from "@/types/emailCampaign";
 
 interface EmailMarketingProps {
   onBack: () => void;
@@ -66,40 +38,81 @@ type View =
   | "view"
   | "edit";
 
-// Mock user for functionality
-const mockUser = {
-  id: "mock-user-123",
-  email: "owner@example.com",
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+/* ===== Mock user ===== */
+
+const mockUser: User = {
+  id: "1",
+  name: "John Doe",
+  email: "john@example.com",
 };
+
+/* ===== API response shape for fetch ===== */
+
+interface ApiResponse {
+  campaigns?: EmailCampaign[];
+  strategies?: EmailStrategy[];
+}
+
+/* ===== Component ===== */
 
 const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
   const { toast } = useToast();
-  const [currentView, setCurrentView] = useState<View>("dashboard"); // Start with dashboard, not AI strategy
-  const [selectedCampaign, setSelectedCampaign] =
-    useState<EmailCampaign | null>(null);
+  const [currentView, setCurrentView] = useState<View>("dashboard");
+  // We only use the setter for selected campaign in this file, so discard the read value.
+  const [, setSelectedCampaign] = useState<EmailCampaign | null>(null);
   const [selectedStrategy, setSelectedStrategy] =
     useState<EmailStrategy | null>(null);
-  const [activeTab, setActiveTab] = useState("campaigns");
+  const [activeTab, setActiveTab] = useState<string>("campaigns");
   const [strategies, setStrategies] = useState<EmailStrategy[]>([]);
   const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Fetch email data from API
   useEffect(() => {
-    fetch("/api/emailMarketing")
-      .then((res) => res.json())
-      .then((json) => {
-        setCampaigns(json.campaigns);
-        setStrategies(json.strategies);
-      })
-      .catch((err) => console.error("Failed to fetch email data:", err))
-      .finally(() => setLoading(false));
-  }, []);
+    let mounted = true;
+
+    const load = async () => {
+      try {
+        const res = await fetch("/api/emailMarketing");
+        if (!res.ok) {
+          throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+        }
+        const json = (await res.json()) as ApiResponse;
+        if (!mounted) return;
+
+        setCampaigns(json.campaigns ?? []);
+        setStrategies(json.strategies ?? []);
+      } catch (err) {
+        console.error("Failed to fetch email data:", err);
+        toast({
+          title: "Failed to load data",
+          description: "Could not fetch email marketing data. Try refreshing.",
+          variant: "destructive",
+        });
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [toast]);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Loading email marketing data...</p>
+      <div className="flex flex-col justify-center items-center h-screen space-y-3">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-gray-600 text-sm sm:text-base">
+          Loading email marketing data...
+        </p>
       </div>
     );
   }
@@ -129,18 +142,11 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
     try {
       setLoading(true);
 
-      // Define a type for the workflow object
-      type Workflow = {
-        type: string;
-        name: string;
-        description: string;
-        suggested_emails?: { subject: string }[];
-      };
-
-      // Find the specific workflow from the strategy
-      const workflow = (
-        selectedStrategy.generated_strategy.recommended_workflows as Workflow[]
-      ).find((w: Workflow) => w.type === workflowType);
+      // Use the shared Workflow interface (no duplicate inner type)
+      const workflow =
+        selectedStrategy.generated_strategy.recommended_workflows.find(
+          (w) => w.type === workflowType
+        );
 
       if (!workflow) {
         throw new Error("Workflow not found in strategy");
@@ -261,11 +267,11 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
     });
   };
 
-  // AI Strategy Builder view
+  // Views
   if (currentView === "ai-strategy") {
     return (
       <AIStrategyBuilder
-        user={mockUser as any}
+        user={mockUser}
         onBack={handleBackToDashboard}
         onComplete={handleStrategyComplete}
       />
@@ -287,11 +293,12 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
       <CampaignCreator
         onBack={handleBackToDashboard}
         onComplete={handleCampaignCreated}
-        user={mockUser as any}
+        user={mockUser}
       />
     );
   }
 
+  /* ===== Main Dashboard ===== */
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -340,7 +347,7 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
         </div>
       </div>
 
-      {/* AI-Enhanced Quick Stats */}
+      {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
           <CardContent className="p-6">
@@ -479,8 +486,8 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
         </Card>
       )}
 
-      {/* Main Content with AI enhancements */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      {/* Main Content with Tabs */}
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(String(v))}>
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger
             value="campaigns"

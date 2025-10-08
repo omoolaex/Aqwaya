@@ -5,8 +5,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-      <div>
-        <main>{children}</main>
-      </div>
+    <div className="bg-background text-foreground">
+      <main>{children}</main>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import type { EmailCampaign } from "@/types/emailCampaign";
 import {
   Select,
   SelectContent,
@@ -16,33 +17,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Mail, Target, Clock, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// Local type definition for EmailCampaign
-type EmailCampaign = {
-  id: string;
-  user_id: string;
-  name: string;
-  subject_line: string;
-  campaign_type: string;
-  status: string;
-  target_segments: string[];
-  content: { html: string; text: string };
-  scheduled_at?: string;
-  created_at: string;
-  updated_at: string;
-  stats: {
-    sent: number;
-    delivered: number;
-    opened: number;
-    clicked: number;
-    unsubscribed: number;
-    bounced: number;
-  };
-};
 
 interface CampaignCreatorProps {
   onBack: () => void;
   onComplete: (campaign: EmailCampaign) => void;
-  user: { id: string }; // Replace or extend this type as needed for your user object
+  user: { id: string }; 
 }
 
 const WorkingCampaignCreator = ({

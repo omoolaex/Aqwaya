@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { LandingPage } from "@/types/landing"; 
 
-// In-memory DB (shared between requests during dev)
 let landingPages: LandingPage[] = [
   {
     id: 1,

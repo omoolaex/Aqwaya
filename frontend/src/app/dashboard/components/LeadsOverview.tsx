@@ -13,6 +13,7 @@ import {
   Mail,
   Phone,
   Calendar,
+  Loader2,
 } from "lucide-react";
 
 interface Lead {
@@ -56,11 +57,13 @@ const LeadsOverview = ({ onBack }: LeadsOverviewProps) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Loading leads...</p>
+      <div className="flex flex-col justify-center items-center h-screen space-y-3">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-gray-600 text-sm sm:text-base">Loading leads...</p>
       </div>
     );
   }
+
   return (
     <div className="space-y-6">
       {/* Header */}

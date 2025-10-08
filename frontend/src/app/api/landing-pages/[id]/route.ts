@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import type { LandingPage } from "@/types/landing";
 import { getLandingPages, setLandingPages } from "../route";
 
 // GET one

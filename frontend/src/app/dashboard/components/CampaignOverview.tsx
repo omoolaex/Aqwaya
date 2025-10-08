@@ -17,6 +17,7 @@ import {
   Copy,
   Trash2,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 
 import AIPromptBuilder from "./AIPromptBuilder";
@@ -51,8 +52,11 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Loading campaigns...</p>
+      <div className="flex flex-col justify-center items-center h-screen space-y-3">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-gray-600 text-sm sm:text-base">
+          Loading campaigns...
+        </p>
       </div>
     );
   }
@@ -198,7 +202,7 @@ const CampaignOverview = ({ onBack }: CampaignOverviewProps) => {
   );
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 md:p-8 overflow-x-hidden">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-4">

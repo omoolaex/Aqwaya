@@ -56,7 +56,7 @@ const LandingPagesOverview = ({ onBack }: LandingPagesOverviewProps) => {
 
   if (currentView === "overview") {
     return (
-      <div className="space-y-6 p-4 sm:p-6 overflow-x-hidden">
+      <div className="space-y-6 overflow-x-hidden">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
@@ -78,7 +78,7 @@ const LandingPagesOverview = ({ onBack }: LandingPagesOverviewProps) => {
               </p>
             </div>
           </div>
-          <Button
+          <Button variant="default"
             onClick={() => setCurrentView("builder")}
             className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
           >
