@@ -8,6 +8,7 @@ import {
   ShoppingCart,
   Calendar,
 } from "lucide-react";
+import { LandingPageFormData } from "@/types/landing";
 
 interface Template {
   id: string;
@@ -17,10 +18,9 @@ interface Template {
 
 interface Props {
   templates: Template[];
-  formData: {
-    template: string;
-  };
-  handleInputChange: (field: string, value: string) => void;
+  formData: LandingPageFormData;
+  handleInputChange: (field: keyof LandingPageFormData, value: string) => void;
+  children?: React.ReactNode;
 }
 
 const TemplateSelectStep: React.FC<Props> = ({
@@ -65,7 +65,12 @@ const TemplateSelectStep: React.FC<Props> = ({
                 ? "ring-2 ring-blue-500 bg-blue-50"
                 : "hover:bg-gray-50"
             }`}
-            onClick={() => handleInputChange("template", template.id)}
+            onClick={() =>
+              handleInputChange(
+                "template" as keyof LandingPageFormData,
+                template.id
+              )
+            }
           >
             <CardHeader className="text-center pb-3">
               <div className="flex justify-center mb-3">

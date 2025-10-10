@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,8 +13,6 @@ import {
 import { ArrowLeft, Globe, Eye, Code, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-import React from "react";
-
 import PreviewModal from "./landing-page/PreviewModal";
 import DeleteModal from "./landing-page/DeleteModal";
 import UserPagesList from "./landing-page/UserPagesList";
@@ -29,7 +26,13 @@ import GenerationProgress from "./landing-page/steps/GenerationProgress";
 import LandingPagePreviewCard from "./landing-page/steps/LandingPagePreviewCard";
 import PagePerformanceTools from "./landing-page/steps/PagePerformanceTools";
 import { useLandingBuilderSteps } from "./landing-page/useLandingBuilderSteps";
-import { LandingPage, Template, ColorScheme } from "@/types/landing";
+import {
+  LandingPage,
+  LandingPageFormData,
+  Template,
+  ColorScheme,
+  AIContent,
+} from "@/types/landing";
 
 interface LandingPageBuilderProps {
   onBack: () => void;
@@ -37,11 +40,10 @@ interface LandingPageBuilderProps {
 
 const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
   const { toast } = useToast();
-
   const { currentStep, setCurrentStep, goToNext, goToPrev } =
     useLandingBuilderSteps(5);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LandingPageFormData>({
     pageName: "",
     businessName: "",
     industry: "",
@@ -50,20 +52,22 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
     valueProposition: "",
     template: "",
     colorScheme: "",
+    aiContent: null,
   });
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationComplete, setGenerationComplete] = useState(false);
-  const [userPages, setUserPages] = useState<any[]>([]);
+  const [userPages, setUserPages] = useState<LandingPage[]>([]);
   const [loadingPages, setLoadingPages] = useState(false);
-  const [aiContent, setAIContent] = useState<any>(null);
+  const [aiContent, setAIContent] = useState<AIContent | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [selectedPage, setSelectedPage] = useState<any>(null);
+  const [selectedPage, setSelectedPage] = useState<LandingPage | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingPageId, setDeletingPageId] = useState<string | null>(null);
   const [isProcessingDelete, setIsProcessingDelete] = useState(false);
-  const [templates, setTemplates] = useState<any[]>([]);
-  const [colorSchemes, setColorSchemes] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [colorSchemes, setColorSchemes] = useState<ColorScheme[]>([]);
 
   useEffect(() => {
     setLoadingPages(true);
@@ -81,36 +85,39 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       .finally(() => setLoadingPages(false));
   }, [generationComplete]);
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (
+    field: keyof LandingPageFormData,
+    value: string
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Check if we can proceed to next step
   const canProceedToStep = (step: number) => {
     switch (step) {
-      case 2: // Template step
+      case 2:
         return !!formData.template;
-      case 3: // Color scheme step
+      case 3:
         return !!formData.colorScheme;
-      case 4: // Generation step
+      case 4:
         return true;
       default:
         return true;
     }
   };
 
-  // --- Generate page with AI when user finishes flow ---
   const handleGenerate = async () => {
     setIsGenerating(true);
     setAIContent(null);
     setEditMode(false);
 
     try {
-      const mockAIContent = {
-        headline: `Transform Your ${formData.industry} Business Today`,
+      const mockAIContent: AIContent = {
+        headline: `Transform Your ${formData.industry || ""} Business Today`,
         subheadline:
           formData.valueProposition ||
-          `Discover how ${formData.businessName} can help you achieve your goals`,
+          `Discover how ${
+            formData.businessName || ""
+          } can help you achieve your goals`,
         features: [
           "Proven Results",
           "Expert Support",
@@ -137,19 +144,90 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       };
 
       setAIContent(mockAIContent);
+
       setCurrentStep(4);
-    } catch (err: any) {
-      toast({
-        title: "Error during generation",
-        description: err.message,
-        variant: "destructive",
-      });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast({
+          title: "Error during generation",
+          description: err.message,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // --- Save landing page to Supabase (with AI content) ---
+  const handleAIContentChange = (
+    field: keyof AIContent,
+    value: string | string[]
+  ) => {
+    if (!aiContent) return;
+    if (field === "features" && Array.isArray(value)) {
+      setAIContent({ ...aiContent, features: value });
+    } else if (typeof value === "string") {
+      setAIContent({ ...aiContent, [field]: value } as AIContent);
+    }
+  };
+
+  const handlePreviewPage = (page: LandingPage) => {
+    setSelectedPage(page);
+    setShowPreviewModal(true);
+  };
+
+  const handleEditPage = (page: LandingPage) => {
+    setFormData({
+      pageName: page.name,
+      businessName: page.businessName,
+      industry: page.industry,
+      goal: page.goal,
+      targetAudience: page.targetAudience,
+      valueProposition: page.valueProposition,
+      template: page.template,
+      colorScheme: page.colorScheme,
+    });
+    setAIContent(page.aiContent || null);
+    setEditMode(false);
+    setCurrentStep(4);
+    toast({
+      title: "Page loaded for editing.",
+      description: `You're now editing: ${page.name}`,
+    });
+  };
+
+  const handleDeletePage = (page: LandingPage) => {
+    setDeletingPageId(page.id.toString());
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeletePage = async () => {
+    if (!deletingPageId) return;
+
+    setIsProcessingDelete(true);
+    const res = await fetch(`/api/landing-pages/${deletingPageId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      toast({
+        title: "Landing Page Deleted",
+        description: "The page has been removed.",
+      });
+      setUserPages((pages) => pages.filter((p) => p.id !== deletingPageId));
+    } else {
+      toast({
+        title: "Delete failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    setIsProcessingDelete(false);
+    setShowDeleteModal(false);
+    setDeletingPageId(null);
+  };
+
   const handleSaveLandingPage = async () => {
     setIsGenerating(true);
 
@@ -162,7 +240,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       value_proposition: formData.valueProposition,
       template: formData.template,
       color_scheme: formData.colorScheme,
-      ai_content: aiContent,
+      aiContent: aiContent,
     };
 
     try {
@@ -191,16 +269,6 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
     }
   };
 
-  // Allow in-place editing of common fields
-  const handleAIContentChange = (field: string, value: string | string[]) => {
-    if (field === "features" && Array.isArray(value)) {
-      setAIContent((prev: any) => ({ ...prev, features: value }));
-    } else if (typeof value === "string") {
-      setAIContent((prev: any) => ({ ...prev, [field]: value }));
-    }
-  };
-
-  // --- Step 4: Review and Edit Generated Page before saving ---
   const renderStep4Edit = () => (
     <AIGeneratedContentEdit
       aiContent={aiContent}
@@ -210,7 +278,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
     />
   );
 
-  // --- Step 4: Preview only mode (before editing) ---
+  // Step 4: Preview only mode
   const renderStep4Preview = () => (
     <AIGeneratedContentPreview
       aiContent={aiContent}
@@ -219,6 +287,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
     />
   );
 
+  // Step 5: User Pages
   const renderUserPages = () => (
     <UserPagesList
       pages={userPages}
@@ -237,6 +306,7 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
           valueProposition: "",
           template: "",
           colorScheme: "",
+          aiContent: null,
         });
         setAIContent(null);
         setEditMode(false);
@@ -244,87 +314,6 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
       }}
     />
   );
-
-  const renderPreviewModal = () => (
-    <PreviewModal
-      show={showPreviewModal}
-      selectedPage={selectedPage}
-      onClose={handleClosePreviewModal}
-    />
-  );
-
-  const renderDeleteModal = () => (
-    <DeleteModal
-      show={showDeleteModal}
-      isProcessing={isProcessingDelete}
-      onCancel={() => setShowDeleteModal(false)}
-      onDelete={confirmDeletePage}
-    />
-  );
-
-  const handlePreviewPage = async (page: any) => {
-    setSelectedPage(page);
-    setShowPreviewModal(true);
-  };
-
-  const handleClosePreviewModal = () => {
-    setShowPreviewModal(false);
-    setSelectedPage(null);
-  };
-
-  const handleEditPage = async (page: any) => {
-    setFormData({
-      pageName: page.name || "",
-      businessName: page.business_name || "",
-      industry: page.industry || "",
-      goal: page.goal || "",
-      targetAudience: page.target_audience || "",
-      valueProposition: page.value_proposition || "",
-      template: page.template || "",
-      colorScheme: page.color_scheme || "",
-    });
-    setAIContent(page.ai_content || null);
-    setEditMode(false);
-    setCurrentStep(4);
-    toast({
-      title: "Page loaded for editing.",
-      description: `You're now editing: ${page.name}`,
-    });
-  };
-
-  const handleDeletePage = (page: any) => {
-    setDeletingPageId(page.id);
-    setShowDeleteModal(true);
-  };
-
-  const confirmDeletePage = async () => {
-    if (!deletingPageId) return;
-
-    setIsProcessingDelete(true);
-    const res = await fetch("/api/landing-pages", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: deletingPageId }),
-    });
-
-    if (res.ok) {
-      toast({
-        title: "Landing Page Deleted",
-        description: "The page has been removed.",
-      });
-      setUserPages((pages) => pages.filter((p) => p.id !== deletingPageId));
-    } else {
-      toast({
-        title: "Delete failed",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    }
-
-    setIsProcessingDelete(false);
-    setShowDeleteModal(false);
-    setDeletingPageId(null);
-  };
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -449,6 +438,28 @@ const LandingPageBuilder = ({ onBack }: LandingPageBuilderProps) => {
   const handlePrevious = () => {
     goToPrev();
   };
+
+  const handleClosePreviewModal = () => {
+    setShowPreviewModal(false);
+    setSelectedPage(null);
+  };
+
+  const renderPreviewModal = () => (
+    <PreviewModal
+      show={showPreviewModal}
+      selectedPage={selectedPage}
+      onClose={handleClosePreviewModal}
+    />
+  );
+
+  const renderDeleteModal = () => (
+    <DeleteModal
+      show={showDeleteModal}
+      isProcessing={isProcessingDelete}
+      onCancel={() => setShowDeleteModal(false)}
+      onDelete={confirmDeletePage}
+    />
+  );
 
   return (
     <div className="space-y-6">

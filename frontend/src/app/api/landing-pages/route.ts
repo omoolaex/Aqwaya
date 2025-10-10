@@ -1,7 +1,16 @@
-import { NextResponse } from "next/server";
-import type { LandingPage } from "@/types/landing"; 
+import { NextResponse, type NextRequest } from "next/server";
 
-let landingPages: LandingPage[] = [
+export interface LandingPage {
+  id: number;
+  name: string;
+  status: "Draft" | "Published";
+  visits: number;
+  conversions: number;
+  conversionRate: string;
+  createdDate: string;
+}
+
+const landingPages: LandingPage[] = [
   {
     id: 1,
     name: "Summer Sale Landing Page",
@@ -31,33 +40,51 @@ let landingPages: LandingPage[] = [
   },
 ];
 
-// GET all pages
-export async function GET() {
-  return NextResponse.json(landingPages);
+// Helper to compute overview stats
+function computeStats(pages: LandingPage[]) {
+  const totalVisits = pages.reduce((sum, p) => sum + p.visits, 0);
+  const totalConversions = pages.reduce((sum, p) => sum + p.conversions, 0);
+  const avgConversionRate =
+    pages.length > 0
+      ? `${((totalConversions / totalVisits) * 100 || 0).toFixed(1)}%`
+      : "0%";
+
+  return {
+    totalPages: pages.length,
+    totalVisits,
+    totalConversions,
+    avgConversionRate,
+  };
 }
 
-// POST create new page
-export async function POST(req: Request) {
-  const body = await req.json();
+// GET all landing pages + stats
+export async function GET() {
+  const stats = computeStats(landingPages);
+  return NextResponse.json({
+    landingPages: Array.isArray(landingPages) ? landingPages : [],
+    stats,
+  });
+}
+
+// POST - create new landing page
+export async function POST(req: NextRequest) {
+  const data = await req.json();
 
   const newPage: LandingPage = {
-    id: Date.now(),
-    createdDate: new Date().toISOString().split("T")[0],
-    status: "Draft",
+    id: landingPages.length + 1,
+    name: data.name || "New Landing Page",
+    status: data.status || "Draft",
     visits: 0,
     conversions: 0,
     conversionRate: "0%",
-    ...body,
+    createdDate: new Date().toISOString().split("T")[0],
   };
 
   landingPages.push(newPage);
-  return NextResponse.json(newPage, { status: 201 });
-}
 
-// helper for item routes to use same array
-export function getLandingPages() {
-  return landingPages;
-}
-export function setLandingPages(pages: LandingPage[]) {
-  landingPages = pages;
+  const stats = computeStats(landingPages);
+  return NextResponse.json(
+    { message: "Landing page created", newPage, stats },
+    { status: 201 }
+  );
 }

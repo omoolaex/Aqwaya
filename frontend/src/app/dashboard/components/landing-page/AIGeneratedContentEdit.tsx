@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Zap } from "lucide-react";
+import type { AIContent } from "@/types/landing";
 
 interface Props {
-  aiContent: any;
-  onChange: (field: string, value: string | string[]) => void;
+  aiContent: AIContent | null;
+  onChange: (field: keyof AIContent, value: string | string[]) => void;
   onSave: () => void;
   onBack: () => void;
 }
@@ -20,6 +20,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
   onBack,
 }) => {
   if (!aiContent) return null;
+
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <div className="flex items-center justify-center mb-4">
@@ -28,6 +29,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
           Review & Edit Your AI Generated Landing Page
         </span>
       </div>
+
       <div className="space-y-4 p-6 bg-white rounded shadow border border-blue-100">
         <div>
           <Label htmlFor="headline">Headline</Label>
@@ -36,6 +38,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
             onChange={(e) => onChange("headline", e.target.value)}
           />
         </div>
+
         <div>
           <Label htmlFor="subheadline">Subheadline</Label>
           <Textarea
@@ -43,6 +46,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
             onChange={(e) => onChange("subheadline", e.target.value)}
           />
         </div>
+
         <div>
           <Label>Key Features</Label>
           <Textarea
@@ -55,6 +59,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
             rows={3}
           />
         </div>
+
         <div>
           <Label htmlFor="ctaButton">Call-to-Action Button Text</Label>
           <Input
@@ -62,6 +67,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
             onChange={(e) => onChange("ctaButton", e.target.value)}
           />
         </div>
+
         <div>
           <Label htmlFor="testimonial">Testimonial</Label>
           <Textarea
@@ -69,6 +75,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
             onChange={(e) => onChange("testimonial", e.target.value)}
           />
         </div>
+
         <div>
           <Label htmlFor="formHeadline">Form Headline</Label>
           <Input
@@ -77,6 +84,7 @@ const AIGeneratedContentEdit: React.FC<Props> = ({
           />
         </div>
       </div>
+
       <Button
         className="w-full bg-green-600 hover:bg-green-700"
         onClick={onSave}

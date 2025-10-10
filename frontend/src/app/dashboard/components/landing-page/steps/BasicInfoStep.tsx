@@ -2,6 +2,7 @@ import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { LandingPageFormData } from "@/types/landing";
 
 interface Props {
   formData: {
@@ -10,7 +11,7 @@ interface Props {
     targetAudience: string;
     valueProposition: string;
   };
-  handleInputChange: (field: string, value: string) => void;
+  handleInputChange: (field: keyof LandingPageFormData, value: string) => void;
   children?: React.ReactNode;
 }
 
@@ -32,7 +33,7 @@ const BasicInfoStep: React.FC<Props> = ({
           <Input
             id="pageName"
             value={formData.pageName}
-            onChange={(e) => handleInputChange("pageName", e.target.value)}
+            onChange={(e) => handleInputChange("pageName" as keyof LandingPageFormData, e.target.value)}
             placeholder="e.g., Product Launch 2024"
           />
         </div>
@@ -45,7 +46,7 @@ const BasicInfoStep: React.FC<Props> = ({
             id="targetAudience"
             value={formData.targetAudience}
             onChange={(e) =>
-              handleInputChange("targetAudience", e.target.value)
+              handleInputChange("targetAudience" as keyof LandingPageFormData, e.target.value)
             }
             placeholder="e.g., Small business owners, Tech professionals"
           />
@@ -57,7 +58,7 @@ const BasicInfoStep: React.FC<Props> = ({
             id="valueProposition"
             value={formData.valueProposition}
             onChange={(e) =>
-              handleInputChange("valueProposition", e.target.value)
+              handleInputChange("valueProposition" as keyof LandingPageFormData, e.target.value)
             }
             placeholder="What unique value do you offer? What problem do you solve?"
             rows={3}

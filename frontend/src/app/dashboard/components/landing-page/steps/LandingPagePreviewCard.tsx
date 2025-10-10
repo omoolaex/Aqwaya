@@ -6,18 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Code, Edit, CheckCircle, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-
-interface LandingPageFormData {
-  pageName?: string;
-  id?: string;
-  pageId?: string;
-  industry?: string;
-  valueProposition?: string;
-  businessName?: string;
-  colorScheme?: string;
-  goal?: string;
-  [key: string]: unknown;
-}
+import { LandingPageFormData } from "@/types/landing";
 
 interface Props {
   formData: LandingPageFormData;

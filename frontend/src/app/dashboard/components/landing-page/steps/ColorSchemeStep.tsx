@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
+import { LandingPageFormData } from "@/types/landing";
 
 interface ColorScheme {
   id: string;
@@ -10,10 +11,9 @@ interface ColorScheme {
 
 interface Props {
   colorSchemes: ColorScheme[];
-  formData: {
-    colorScheme: string;
-  };
-  handleInputChange: (field: string, value: string) => void;
+  formData: LandingPageFormData; 
+  handleInputChange: (field: keyof LandingPageFormData, value: string) => void;
+  children?: React.ReactNode;
 }
 
 const ColorSchemeStep: React.FC<Props> = ({
@@ -37,7 +37,7 @@ const ColorSchemeStep: React.FC<Props> = ({
                 ? "ring-2 ring-blue-500 bg-blue-50"
                 : "hover:bg-gray-50"
             }`}
-            onClick={() => handleInputChange("colorScheme", scheme.id)}
+            onClick={() => handleInputChange("colorScheme" as keyof LandingPageFormData, scheme.id)}
           >
             <CardHeader className="text-center pb-3">
               <div className="flex justify-center mb-3">
