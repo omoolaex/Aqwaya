@@ -31,8 +31,10 @@ export default function SignUpPage() {
     try {
       const data = await registerUser(username, email, password);
       localStorage.setItem("token", data.token);
+       localStorage.setItem("user", JSON.stringify(data.user));
+
       // redirect after success
-      router.push("/dashboard");
+      router.push("/onboarding");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
