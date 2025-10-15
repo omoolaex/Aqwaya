@@ -7,10 +7,10 @@ export const GET = async () => {
       icon: "User",
       color: "text-blue-600",
       settings: [
-        { label: "Full Name", type: "input", value: "Sarah Johnson" },
-        { label: "Email", type: "input", value: "sarah.j@company.com" },
-        { label: "Phone", type: "input", value: "+1 (555) 123-4567" },
-        { label: "Company", type: "input", value: "Akwaya Marketing" },
+        { label: "Full Name", type: "input", value: "" },
+        { label: "Email", type: "input", value: "" },
+        { label: "Phone", type: "input", value: "" },
+        { label: "Company", type: "input", value: "" },
       ],
     },
     {
@@ -42,12 +42,16 @@ export const GET = async () => {
         {
           label: "Current Plan",
           type: "display",
-          value: "Pro Plan - $99/month",
+          value: "Pro Plan - ₦000 / month",
         },
         {
           label: "Next Billing Date",
           type: "display",
-          value: "February 15, 2024",
+          value: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
         },
         {
           label: "Payment Method",

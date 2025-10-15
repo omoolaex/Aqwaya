@@ -44,12 +44,70 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
   const [settingsCategories, setSettingsCategories] = useState<
     SettingsCategory[] | null
   >(null);
+  const [profileSettings, setProfileSettings] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    company: "",
+  });
 
+  // handle input field changes
+  const handleChange = (field: keyof typeof profileSettings, value: string) => {
+    setProfileSettings((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // load saved profile data
   useEffect(() => {
-    fetch("/api/settingsCategories")
-      .then((res) => res.json())
-      .then((data: SettingsCategory[]) => setSettingsCategories(data))
-      .catch((err) => console.error(err));
+    const savedProfile = localStorage.getItem("userProfile");
+    if (savedProfile) {
+      setProfileSettings(JSON.parse(savedProfile));
+    }
+  }, []);
+
+  // save profile data
+  const handleSaveChanges = () => {
+    localStorage.setItem("userProfile", JSON.stringify(profileSettings));
+    alert("Profile updated successfully!");
+  };
+
+  // fetch settings categories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/settingsCategories");
+        const data: SettingsCategory[] = await res.json();
+
+        const storedUser = localStorage.getItem("user");
+        const storedProfile = localStorage.getItem("businessProfile");
+        const user = storedUser ? JSON.parse(storedUser) : null;
+        const profile = storedProfile ? JSON.parse(storedProfile) : null;
+
+        const updatedData = data.map((category) => {
+          if (category.title === "Profile Settings" && user && profile) {
+            const updatedSettings = category.settings.map((setting) => {
+              switch (setting.label) {
+                case "Full Name":
+                  return { ...setting, value: user.username ?? "" };
+                case "Email":
+                  return { ...setting, value: user.email ?? "" };
+                case "Company":
+                  return { ...setting, value: profile.businessName ?? "" };
+                default:
+                  return setting;
+              }
+            });
+            return { ...category, settings: updatedSettings };
+          }
+          return category;
+        });
+
+        setSettingsCategories(updatedData);
+      } catch (error) {
+        console.error("Error loading settings:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (!settingsCategories) {
@@ -98,43 +156,79 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                   <span>{category.title}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {category.settings.map((setting, settingIndex) => (
-                  <div
-                    key={settingIndex}
-                    className="flex items-center justify-between"
-                  >
-                    <Label className="text-sm font-medium">
-                      {setting.label}
-                    </Label>
-                    <div className="flex items-center">
-                      {setting.type === "input" && (
-                        <Input defaultValue={setting.value} className="w-48" />
-                      )}
-                      {setting.type === "switch" && (
-                        <Switch defaultChecked={setting.value as boolean} />
-                      )}
-                      {setting.type === "display" && (
-                        <span className="text-sm text-gray-600">
-                          {setting.value}
-                        </span>
-                      )}
-                      {setting.type === "select" && (
-                        <span className="text-sm text-gray-600">
-                          {setting.value}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
 
-                {category.title === "Profile Settings" && (
-                  <Button
-                    variant="outline"
-                    className="w-full mt-4 bg-gray-900 text-white"
-                  >
-                    Save Changes
-                  </Button>
+              <CardContent className="space-y-4">
+                {category.title === "Profile Settings" ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Full Name</Label>
+                      <Input
+                        value={profileSettings.fullName}
+                        onChange={(e) =>
+                          handleChange("fullName", e.target.value)
+                        }
+                        className="w-48"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Email</Label>
+                      <Input
+                        value={profileSettings.email}
+                        onChange={(e) => handleChange("email", e.target.value)}
+                        className="w-48"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Phone</Label>
+                      <Input
+                        value={profileSettings.phone}
+                        onChange={(e) => handleChange("phone", e.target.value)}
+                        className="w-48"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Company</Label>
+                      <Input
+                        value={profileSettings.company}
+                        onChange={(e) =>
+                          handleChange("company", e.target.value)
+                        }
+                        className="w-48"
+                      />
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      className="w-full mt-4 bg-gray-900 text-white"
+                      onClick={handleSaveChanges}
+                    >
+                      Save Changes
+                    </Button>
+                  </>
+                ) : (
+                  category.settings.map((setting, settingIndex) => (
+                    <div
+                      key={settingIndex}
+                      className="flex items-center justify-between"
+                    >
+                      <Label className="text-sm font-medium">
+                        {setting.label}
+                      </Label>
+                      <div className="flex items-center">
+                        {setting.type === "switch" && (
+                          <Switch defaultChecked={setting.value as boolean} />
+                        )}
+                        {setting.type === "display" && (
+                          <span className="text-sm text-gray-600">
+                            {setting.value}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
                 )}
 
                 {category.title === "Billing" && (
@@ -168,6 +262,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             </div>
             <Button variant="outline">Export</Button>
           </div>
+
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-sm font-medium text-red-600">

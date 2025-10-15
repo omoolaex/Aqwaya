@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,8 @@ export interface BusinessProfileData {
   description: string;
   employees: string;
   brandColor: string;
-  logo?: File | null;
+  logo?: string | null;
+  logoName?: string;
 }
 
 interface BusinessProfileSetupProps {
@@ -59,6 +60,7 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
     "200+ employees",
   ];
 
+  // Unified input change handler
   const handleInputChange = (
     field: keyof BusinessProfileData,
     value: string
@@ -66,28 +68,61 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Restore from localStorage once
+  useEffect(() => {
+    const savedData = localStorage.getItem("businessProfile");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
+  // Save to localStorage whenever formData changes
+  useEffect(() => {
+    if (Object.keys(formData).length > 0) {
+      localStorage.setItem("businessProfile", JSON.stringify(formData));
+    }
+  }, [formData]);
+
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, logo: file }));
-    }
+    if (!file) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      logoName: file.name, // 👈 only store name
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
+      // Save profile to backend (if needed)
       const response = await saveBusinessProfile(formData);
       console.log("Saved:", response);
 
+      // Save only logo name (not file data)
+      const dataToStore = {
+        ...formData,
+        logo: null, // don't store the image
+        logoName: formData.logoName || null, // store just the filename
+      };
+
+      // Optionally, store just the logo name separately for quick access
+      if (formData.logoName) {
+        localStorage.setItem("logoName", formData.logoName);
+      }
+
+      localStorage.setItem("businessProfile", JSON.stringify(dataToStore));
+
+      // Optional: call the parent callback
       onComplete(formData);
     } catch (error) {
       console.error("Error saving profile:", error);
     }
   };
 
-  const isFormValid = () => {
-    return formData.businessName && formData.industry;
-  };
+  const isFormValid = () => formData.businessName && formData.industry;
 
   return (
     <AuthGuard>
@@ -104,9 +139,10 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
               Tell us about your business to get started
             </p>
           </CardHeader>
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Basic Business Information */}
+              {/* Basic Info */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                   <Building className="w-5 h-5 mr-2" />
@@ -118,11 +154,11 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                     <Label htmlFor="businessName">Business Name *</Label>
                     <Input
                       id="businessName"
-                      placeholder="Your Business Name"
                       value={formData.businessName}
                       onChange={(e) =>
                         handleInputChange("businessName", e.target.value)
                       }
+                      placeholder="Your Business Name"
                       required
                     />
                   </div>
@@ -139,10 +175,8 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                       required
                     >
                       <option value="">Select your industry</option>
-                      {industries.map((industry) => (
-                        <option key={industry} value={industry}>
-                          {industry}
-                        </option>
+                      {industries.map((ind) => (
+                        <option key={ind}>{ind}</option>
                       ))}
                     </select>
                   </div>
@@ -151,23 +185,23 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                     <Label htmlFor="website">Website</Label>
                     <Input
                       id="website"
-                      placeholder="https://yourwebsite.com"
                       value={formData.website}
                       onChange={(e) =>
                         handleInputChange("website", e.target.value)
                       }
+                      placeholder="https://yourwebsite.com"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="location">Business Location</Label>
+                    <Label htmlFor="location">Location</Label>
                     <Input
                       id="location"
-                      placeholder="City, Country"
                       value={formData.location}
                       onChange={(e) =>
                         handleInputChange("location", e.target.value)
                       }
+                      placeholder="City, Country"
                     />
                   </div>
 
@@ -181,26 +215,24 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                         handleInputChange("employees", e.target.value)
                       }
                     >
-                      <option value="">Select company size</option>
-                      {employeeSizes.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
+                      <option value="">Select size</option>
+                      {employeeSizes.map((s) => (
+                        <option key={s}>{s}</option>
                       ))}
                     </select>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Business Description</Label>
+                  <Label htmlFor="description">Description</Label>
                   <Textarea
                     id="description"
-                    placeholder="Tell us about your business, products, or services..."
+                    rows={3}
                     value={formData.description}
                     onChange={(e) =>
                       handleInputChange("description", e.target.value)
                     }
-                    rows={3}
+                    placeholder="Tell us about your business..."
                   />
                 </div>
               </div>
@@ -215,24 +247,23 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="logo">Logo Upload</Label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        id="logo"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        className="hidden"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => document.getElementById("logo")?.click()}
-                        className="w-full"
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        {formData.logo ? formData.logo.name : "Upload Logo"}
-                      </Button>
-                    </div>
+                    <input
+                      id="logo"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleLogoUpload}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById("logo")?.click()}
+                      className="w-full"
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      {/* show stored logo name or default text */}
+                      {formData.logoName || "Upload Logo"}
+                    </Button>
                   </div>
 
                   <div className="space-y-2">
@@ -245,7 +276,7 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                         onChange={(e) =>
                           handleInputChange("brandColor", e.target.value)
                         }
-                        className="w-16 h-10 p-1 rounded"
+                        className="w-16 h-10"
                       />
                       <Input
                         type="text"
@@ -253,7 +284,6 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                         onChange={(e) =>
                           handleInputChange("brandColor", e.target.value)
                         }
-                        placeholder="#3B82F6"
                         className="flex-1"
                       />
                     </div>
@@ -270,9 +300,6 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
                 >
                   Complete Setup & Continue to Dashboard
                 </Button>
-                <p className="text-xs text-gray-500 mt-2 text-center">
-                  You can update this information later in your settings
-                </p>
               </div>
             </form>
           </CardContent>
@@ -281,5 +308,4 @@ const BusinessProfileSetup = ({ onComplete }: BusinessProfileSetupProps) => {
     </AuthGuard>
   );
 };
-
 export default BusinessProfileSetup;

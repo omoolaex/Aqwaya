@@ -41,7 +41,7 @@ export default function SignInPage() {
       const data = await loginUser(email, password);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/dashboard");
+      router.push("/onboarding");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         const msg =
