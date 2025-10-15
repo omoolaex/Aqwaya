@@ -215,8 +215,8 @@ const AIStrategyBuilder = ({ onBack, onComplete }: AIStrategyBuilderProps) => {
           primary_kpis: [
             {
               metric: "Open Rate",
-              target: "40%",
-              industry_benchmark: "35%",
+              target: "0%",
+              industry_benchmark: "0%",
             },
           ],
           optimization_recommendations: [

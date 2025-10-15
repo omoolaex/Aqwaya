@@ -41,26 +41,26 @@ export async function GET() {
   const stats = [
     {
       label: "Total Leads",
-      value: "2,847",
-      change: "+12.5%",
+      value: "0",
+      change: "+0%",
       color: "text-blue-600",
     },
     {
       label: "Qualified Leads",
-      value: "1,234",
-      change: "+8.3%",
+      value: "0",
+      change: "+0%",
       color: "text-green-600",
     },
     {
       label: "Conversion Rate",
-      value: "43.4%",
-      change: "+5.1%",
+      value: "0%",
+      change: "+0%",
       color: "text-purple-600",
     },
     {
       label: "Avg. Lead Score",
-      value: "84",
-      change: "+2.8%",
+      value: "0",
+      change: "+0%",
       color: "text-orange-600",
     },
   ];

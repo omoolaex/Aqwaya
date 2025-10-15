@@ -47,7 +47,7 @@ export const GET = async () => {
         {
           label: "Next Billing Date",
           type: "display",
-          value: new Date().toLocaleDateString("en-US", {
+          value: new Date().toLocaleDateString("en-GB", {
             year: "numeric",
             month: "long",
             day: "numeric",

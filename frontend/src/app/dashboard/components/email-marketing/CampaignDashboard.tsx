@@ -248,12 +248,12 @@ const CampaignDashboard = ({
                   },
                   {
                     icon: <Eye className="w-5 h-5 text-green-500" />,
-                    value: `${calculateOpenRate(campaign.stats)}%`,
+                    value: `${calculateOpenRate(campaign.stats)}`,
                     label: "Open Rate",
                   },
                   {
                     icon: <MousePointer className="w-5 h-5 text-purple-500" />,
-                    value: `${calculateClickRate(campaign.stats)}%`,
+                    value: `${calculateClickRate(campaign.stats)}`,
                     label: "Click Rate",
                   },
                   {

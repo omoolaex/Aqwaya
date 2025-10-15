@@ -594,12 +594,6 @@ const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
               onChange={(e) => handleInputChange("audience", e.target.value)}
               className="w-full mb-3"
             />
-            <Input
-              placeholder="What industry are you in?"
-              value={formData.industry}
-              onChange={(e) => handleInputChange("industry", e.target.value)}
-              className="w-full"
-            />
           </CardContent>
         </Card>
 
@@ -656,18 +650,6 @@ const AIPromptBuilder = ({ onBack, specificTool }: AIPromptBuilderProps) => {
               onChange={(e) =>
                 handleInputChange("currentChallenges", e.target.value)
               }
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <Label className="text-base font-semibold">Timeline</Label>
-            <Input
-              placeholder="e.g., 4-6 weeks"
-              value={formData.timeline}
-              onChange={(e) => handleInputChange("timeline", e.target.value)}
-              className="w-full mt-2"
             />
           </CardContent>
         </Card>

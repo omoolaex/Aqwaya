@@ -623,9 +623,9 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-green-600">42.1%</div>
+                <div className="text-3xl font-bold text-green-600">0%</div>
                 <p className="text-sm text-gray-600">
-                  +12.3% from AI optimization
+                  +0% from AI optimization
                 </p>
                 <div className="mt-2 text-xs text-green-600">
                   AI-enhanced performance
@@ -641,8 +641,8 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-blue-600">9.4%</div>
-                <p className="text-sm text-gray-600">+3.7% with AI targeting</p>
+                <div className="text-3xl font-bold text-blue-600">0%</div>
+                <p className="text-sm text-gray-600">+0% with AI targeting</p>
                 <div className="mt-2 text-xs text-blue-600">
                   AI-driven clicks
                 </div>
@@ -657,7 +657,7 @@ const EmailMarketing = ({ onBack }: EmailMarketingProps) => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-purple-600">87%</div>
+                <div className="text-3xl font-bold text-purple-600">0%</div>
                 <p className="text-sm text-gray-600">
                   AI-predicted satisfaction
                 </p>
