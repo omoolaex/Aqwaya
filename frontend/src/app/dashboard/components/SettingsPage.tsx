@@ -23,8 +23,7 @@ interface SettingsPageProps {
 type SettingItem =
   | { label: string; type: "input"; value: string }
   | { label: string; type: "switch"; value: boolean }
-  | { label: string; type: "display"; value: string }
-  | { label: string; type: "select"; value: string };
+  | { label: string; type: "display"; value: string };
 
 interface SettingsCategory {
   title: string;

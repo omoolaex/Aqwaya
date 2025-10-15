@@ -31,7 +31,7 @@ export const GET = async () => {
       settings: [
         { label: "Two-Factor Authentication", type: "switch", value: false },
         { label: "Login Alerts", type: "switch", value: true },
-        { label: "Session Timeout", type: "select", value: "30 minutes" },
+        { label: "Session Timeout", type: "display", value: "30 minutes" },
       ],
     },
     {
