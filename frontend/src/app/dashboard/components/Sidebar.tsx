@@ -61,7 +61,7 @@ const Sidebar = ({ currentView, onViewChange }: SidebarProps) => {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "AIPromptBuilder", label: "AI Prompt Builder", icon: Zap },
     { id: "campaigns", label: "Campaigns", icon: Target },
-    { id: "landingPages", label: "Landing Pages", icon: Globe },
+    { id: "landing-pages", label: "Landing Pages", icon: Globe },
     { id: "leads", label: "Leads", icon: Users },
     {
       id: "emailMarketing",

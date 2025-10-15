@@ -23,6 +23,7 @@ import EmailMarketing from "./components/EmailMarketing";
 import SMSWhatsAppMarketing from "./components/SMSWhatsappMarketing";
 import AnalyticsOverview from "./components/AnalyticsOverview";
 import SettingsPage from "./components/SettingsPage";
+import LandingPageBuilder from "./components/LandingPageBuilder";
 
 interface Stat {
   title: string;
@@ -111,7 +112,7 @@ const Dashboard = () => {
 
   // Direct access to landing page builder
   const handleLandingPageBuilder = () => {
-    setCurrentView("landingPages");
+    setCurrentView("landing-page-builder");
   };
 
   // Handle AI Campaign Builder click - should go to AI Prompt Builder with no specific tool
@@ -131,16 +132,16 @@ const Dashboard = () => {
         );
       case "campaigns":
         return <CampaignOverview onBack={() => setCurrentView("dashboard")} />;
-      case "landingPages":
+      case "landing-pages":
         return (
           <LandingPagesOverview
             onBack={() => setCurrentView("dashboard")}
             onCreateNew={handleLandingPageBuilder}
           />
         );
-      case "landingPages":
+      case "landing-page-builder":
         return (
-          <LandingPagesOverview onBack={() => setCurrentView("dashboard")} />
+          <LandingPageBuilder onBack={() => setCurrentView("dashboard")} />
         );
       case "leads":
         return <LeadsOverview onBack={() => setCurrentView("dashboard")} />;
