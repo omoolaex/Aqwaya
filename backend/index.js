@@ -4,6 +4,10 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userroutes');
 const { logger } = require('./middleware/logger');
+const leadRoutes = require('./routes/leadRoutes');
+const campaignRoutes = require('./routes/campaignRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+
 
 dotenv.config();
 
@@ -17,6 +21,9 @@ app.use(express.urlencoded({ extended: true })); // Optional for form-data
 
 // 🔹 Routes
 app.use('/api/users', userRoutes);
+app.use('/api/leads', leadRoutes);
+app.use('/api/campaigns', campaignRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/', (req, res) => res.send('Aqwaya Backend is Running!'));
 
